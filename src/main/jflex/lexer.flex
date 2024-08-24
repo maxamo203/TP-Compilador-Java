@@ -42,11 +42,13 @@ OpenBracket = "("
 CloseBracket = ")"
 Letter = [a-zA-Z]
 Digit = [0-9]
+StartComment = "*-"
+EndComment = "-*"
 
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Digit}+
-
+Comment = {StartComment}(.)*{EndComment}
 %%
 
 
@@ -68,7 +70,8 @@ IntegerConstant = {Digit}+
   {CloseBracket}                            { return symbol(ParserSym.CLOSE_BRACKET); }
 
   /* whitespace */
-  {WhiteSpace}                   { /* ignore */ }
+  {WhiteSpace}                    {/* ignore */}
+  {Comment}                       {/* ignore */}
 }
 
 
