@@ -35,21 +35,42 @@ public class LexerTest {
     assertThat(nextToken()).isEqualTo(ParserSym.EOF);
   }
 
-  // @Test
-  // public void invalidStringConstantLength() {
-  //   assertThrows(InvalidLengthException.class, () -> {
-  //     scan("\"%s\"".formatted(getRandomString()));
-  //     nextToken();
-  //   });
-  // }
 
-  // @Test
-  // public void invalidIdLength() {
-  //   assertThrows(InvalidLengthException.class, () -> {
-  //     scan(getRandomString());
-  //     nextToken();
-  //   });
-  // }
+  @Test
+  public void validStringConstantLength() throws Exception{
+    
+    scan("\"algoaaaaaaaaaaaalgoaaaaaaaaaaaaaaaaaaaaa\"");
+    assertThat(nextToken()).isEqualTo(ParserSym.STRING_CONSTANT);
+  }
+  @Test
+  public void validemptyStringConstantLength() throws Exception{
+    
+    scan("\"\"");
+    assertThat(nextToken()).isEqualTo(ParserSym.STRING_CONSTANT);
+  }
+
+  @Test
+  public void invalidStringConstantLength() {
+    assertThrows(InvalidLengthException.class, () -> {
+      scan("\"%s\"".formatted(getRandomString()));
+      nextToken();
+    });
+  }
+
+
+  @Test
+  public void validId() throws Exception{
+    scan("nombreVar1");
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+  }
+
+  @Test
+  public void invalidIdLength() {
+    assertThrows(InvalidLengthException.class, () -> {
+      scan(getRandomString());
+      nextToken();
+    });
+  }
 
   // @Test
   // public void invalidPositiveIntegerConstantValue() {
@@ -68,22 +89,22 @@ public class LexerTest {
   // }
 
 
-  // @Test
-  // public void assignmentWithExpressions() throws Exception {
-  //   scan("c=d*(e-21)/4");
-  //   assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.MULT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.SUB);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.DIV);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.EOF);
-  // }
+  @Test
+  public void assignmentWithExpressions() throws Exception {
+    scan("c=d*(e-21)/4");
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.MULT);
+    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.SUB);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.DIV);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.EOF);
+  }
 
   // @Test
   // public void unknownCharacter() {

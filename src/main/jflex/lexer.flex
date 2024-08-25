@@ -44,10 +44,12 @@ Letter = [a-zA-Z]
 Digit = [0-9]
 StartComment = "*-"
 EndComment = "-*"
+Quote = "\""
 
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Digit}+
+StringConstant = {Quote}({Letter}|{Digit})*{Quote}
 Comment = {StartComment}(.)*{EndComment}
 %%
 
@@ -56,10 +58,12 @@ Comment = {StartComment}(.)*{EndComment}
 
 <YYINITIAL> {
   /* identifiers */
-  {Identifier}                             { return symbol(ParserSym.IDENTIFIER, yytext()); }
+  {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
+                                            else{return symbol(ParserSym.IDENTIFIER, yytext());}}
   /* Constants */
   {IntegerConstant}                        { return symbol(ParserSym.INTEGER_CONSTANT, yytext()); }
-
+  {StringConstant}                         {if(yylength() > MAX_STRING+2){throw new InvalidLengthException(yytext());}
+                                            else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
   /* operators */
   {Plus}                                    { return symbol(ParserSym.PLUS); }
   {Sub}                                     { return symbol(ParserSym.SUB); }
