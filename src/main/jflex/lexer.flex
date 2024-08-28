@@ -59,6 +59,8 @@ Init = "init"
 And = "y"
 Or = "o"
 Not = "no es"
+Trinagulo = "triangulo"
+GetPenultimatePosition = "getPenultimatePosition"
 
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
@@ -89,6 +91,9 @@ Comment = {StartComment}(.)*{EndComment}
   {While}                                   {return symbol(ParserSym.WHILE);}
   /*{StartWhile}                            {return symbol(ParserSym.START_WHILE);}*/
   /*{EndWhile}                              {return symbol(ParserSym.END_WHILE);}*/
+
+  {GetPenultimatePosition}                  {return symbol(ParserSym.GETPENULTIMATEPOSITION);}
+  {Trinagulo}                               {return symbol(ParserSym.TRIANGULO);}     
   /* identifiers */
   {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
                                             else{return symbol(ParserSym.IDENTIFIER, yytext());}}
@@ -96,6 +101,7 @@ Comment = {StartComment}(.)*{EndComment}
   {IntegerConstant}                        { return symbol(ParserSym.INTEGER_CONSTANT, yytext()); }
   {StringConstant}                         {if(yylength() > MAX_STRING+2){throw new InvalidLengthException(yytext());}
                                             else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
+
   /* operators */
   {Plus}                                    { return symbol(ParserSym.PLUS); }
   {Sub}                                     { return symbol(ParserSym.SUB); }

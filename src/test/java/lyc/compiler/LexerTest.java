@@ -96,7 +96,7 @@ public class LexerTest {
   // }
   @Test
   public void otrasPalabrasReservadas() throws Exception{
-    scan("si y sino o no es init texto mientras *-sff-* decimal");
+    scan("si y sino o no es init texto mientras *-sff-* decimal getPenultimatePosition triangulo");
     assertThat(nextToken()).isEqualTo(ParserSym.IF);
     assertThat(nextToken()).isEqualTo(ParserSym.AND);
     assertThat(nextToken()).isEqualTo(ParserSym.ELSE);
@@ -106,6 +106,8 @@ public class LexerTest {
     assertThat(nextToken()).isEqualTo(ParserSym.TYPE_STRING);
     assertThat(nextToken()).isEqualTo(ParserSym.WHILE);
     assertThat(nextToken()).isEqualTo(ParserSym.TYPE_FLOAT);
+    assertThat(nextToken()).isEqualTo(ParserSym.GETPENULTIMATEPOSITION);
+    assertThat(nextToken()).isEqualTo(ParserSym.TRIANGULO);
   }
   // @Test
   // public void invalidPositiveIntegerConstantValue() {

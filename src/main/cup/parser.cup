@@ -31,6 +31,9 @@ terminal END_WHILE;
 terminal INIT;
 terminal IDENTIFIER;
 
+terminal GETPENULTIMATEPOSITION;
+terminal TRIANGULO;
+
 // Non Terminals
 non terminal sentence;
 non terminal assignment;
