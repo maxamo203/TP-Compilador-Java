@@ -47,7 +47,9 @@ EndComment = "-*"
 Quote = "\""
 StartIf = "¿"
 EndIf = "?"
+If = "si"
 Else = "sino"
+While = "mientras"
 StartWhile = "¿¿"
 EndWhile = "??"
 TypeFloat = "decimal"
@@ -79,12 +81,14 @@ Comment = {StartComment}(.)*{EndComment}
   {TypeInt}                               {return symbol(ParserSym.TYPE_INTEGER);}
   {TypeString}                            {return symbol(ParserSym.TYPE_STRING);}
 
-  {StartIf}                               {return symbol(ParserSym.START_IF);}
-  {EndIf}                                 {return symbol(ParserSym.END_IF);}
+  {If}                                    {return symbol(ParserSym.IF);}
+  /*{StartIf}                               {return symbol(ParserSym.START_IF);}*/
+  /*{EndIf}                                 {return symbol(ParserSym.END_IF);}*/
   {Else}                                  {return symbol(ParserSym.ELSE);}
 
-  {StartWhile}                            {return symbol(ParserSym.START_WHILE);}
-  {EndWhile}                              {return symbol(ParserSym.END_WHILE);}
+  {While}                                   {return symbol(ParserSym.WHILE);}
+  /*{StartWhile}                            {return symbol(ParserSym.START_WHILE);}*/
+  /*{EndWhile}                              {return symbol(ParserSym.END_WHILE);}*/
   /* identifiers */
   {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
                                             else{return symbol(ParserSym.IDENTIFIER, yytext());}}

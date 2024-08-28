@@ -72,24 +72,40 @@ public class LexerTest {
     });
   }
 
+  // @Test
+  // public void palabrasReservadas() throws Exception{
+  //   scan("¿ ¿¿y? ?o?decimal ??sino no es?? 2init entero si rora mientras");
+  //   assertThat(nextToken()).isEqualTo(ParserSym.START_IF);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.START_WHILE);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.AND);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.OR);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.TYPE_FLOAT);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.ELSE);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.NOT);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.INIT);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.TYPE_INTEGER);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.IF);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+  //   assertThat(nextToken()).isEqualTo(ParserSym.WHILE);
+  // }
   @Test
-  public void palabrasReservadas() throws Exception{
-    scan("¿ ¿¿y? ?o?decimal ??sino no es?? 2init entero");
-    assertThat(nextToken()).isEqualTo(ParserSym.START_IF);
-    assertThat(nextToken()).isEqualTo(ParserSym.START_WHILE);
+  public void otrasPalabrasReservadas() throws Exception{
+    scan("si y sino o no es init texto mientras *-sff-* decimal");
+    assertThat(nextToken()).isEqualTo(ParserSym.IF);
     assertThat(nextToken()).isEqualTo(ParserSym.AND);
-    assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
-    assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
-    assertThat(nextToken()).isEqualTo(ParserSym.OR);
-    assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
-    assertThat(nextToken()).isEqualTo(ParserSym.TYPE_FLOAT);
-    assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
     assertThat(nextToken()).isEqualTo(ParserSym.ELSE);
+    assertThat(nextToken()).isEqualTo(ParserSym.OR);
     assertThat(nextToken()).isEqualTo(ParserSym.NOT);
-    assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
-    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
     assertThat(nextToken()).isEqualTo(ParserSym.INIT);
-    assertThat(nextToken()).isEqualTo(ParserSym.TYPE_INTEGER);
+    assertThat(nextToken()).isEqualTo(ParserSym.TYPE_STRING);
+    assertThat(nextToken()).isEqualTo(ParserSym.WHILE);
+    assertThat(nextToken()).isEqualTo(ParserSym.TYPE_FLOAT);
   }
   // @Test
   // public void invalidPositiveIntegerConstantValue() {
