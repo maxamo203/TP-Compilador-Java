@@ -15,6 +15,7 @@ terminal OPEN_BRACKET;
 terminal CLOSE_BRACKET;
 terminal INTEGER_CONSTANT;
 terminal STRING_CONSTANT;
+terminal FLOAT_CONSTANT;
 terminal AND;
 terminal OR;
 terminal NOT;
@@ -33,6 +34,8 @@ terminal IDENTIFIER;
 
 terminal GETPENULTIMATEPOSITION;
 terminal TRIANGULO;
+terminal LEER;
+terminal ESCRIBIR;
 
 // Non Terminals
 non terminal sentence;

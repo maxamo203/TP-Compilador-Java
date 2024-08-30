@@ -59,13 +59,17 @@ Init = "init"
 And = "y"
 Or = "o"
 Not = "no es"
+
 Trinagulo = "triangulo"
 GetPenultimatePosition = "getPenultimatePosition"
+Leer = "leer"
+Escribir = "escribir"
 
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Digit}+
 StringConstant = {Quote}({Letter}|{Digit})*{Quote}
+FloatConstant = ({Digit}+\.{Digit}+)|({Digit}+?\.{Digit}+)|({Digit}+\.{Digit}+?)
 Comment = {StartComment}(.)*{EndComment}
 %%
 
@@ -93,7 +97,9 @@ Comment = {StartComment}(.)*{EndComment}
   /*{EndWhile}                              {return symbol(ParserSym.END_WHILE);}*/
 
   {GetPenultimatePosition}                  {return symbol(ParserSym.GETPENULTIMATEPOSITION);}
-  {Trinagulo}                               {return symbol(ParserSym.TRIANGULO);}     
+  {Trinagulo}                               {return symbol(ParserSym.TRIANGULO);}  
+  {Leer}                                  {return symbol(ParserSym.LEER);}  
+  {Escribir}                                  {return symbol(ParserSym.ESCRIBIR);}  
   /* identifiers */
   {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
                                             else{return symbol(ParserSym.IDENTIFIER, yytext());}}
@@ -101,6 +107,14 @@ Comment = {StartComment}(.)*{EndComment}
   {IntegerConstant}                        { return symbol(ParserSym.INTEGER_CONSTANT, yytext()); }
   {StringConstant}                         {if(yylength() > MAX_STRING+2){throw new InvalidLengthException(yytext());}
                                             else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
+  {FloatConstant}                           { 
+    float value = Float.parseFloat(yytext());
+        // Verificar si el valor está dentro del rango permitido para float de 32 bits
+        if (value == Float.POSITIVE_INFINITY || value == Float.NEGATIVE_INFINITY) {
+            throw new FloatOutOfRangeException(yytext());
+        }
+    return symbol(ParserSym.FLOAT_CONSTANT, value); 
+    }
 
   /* operators */
   {Plus}                                    { return symbol(ParserSym.PLUS); }

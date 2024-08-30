@@ -5,6 +5,7 @@ import lyc.compiler.model.CompilerException;
 import lyc.compiler.model.InvalidIntegerException;
 import lyc.compiler.model.InvalidLengthException;
 import lyc.compiler.model.UnknownCharacterException;
+import lyc.compiler.model.FloatOutOfRangeException;
 import org.apache.commons.text.CharacterPredicates;
 import org.apache.commons.text.RandomStringGenerator;
 import org.junit.jupiter.api.AfterEach;
@@ -72,6 +73,28 @@ public class LexerTest {
     });
   }
 
+  @Test
+  public void validFloat1() throws Exception{
+    scan("3.56");
+    assertThat(nextToken()).isEqualTo(ParserSym.FLOAT_CONSTANT);
+  }
+  @Test
+  public void validFloat2() throws Exception{
+    scan(".234");
+    assertThat(nextToken()).isEqualTo(ParserSym.FLOAT_CONSTANT);
+  }
+  @Test
+  public void validFloat3() throws Exception{
+    scan("2453.");
+    assertThat(nextToken()).isEqualTo(ParserSym.FLOAT_CONSTANT);
+  }
+ @Test
+  public void invalidFloat1() {
+    assertThrows(FloatOutOfRangeException.class, () -> {
+      scan("355863945743249587624976234976398472982795.34545");
+      nextToken();
+    });
+  }
   // @Test
   // public void palabrasReservadas() throws Exception{
   //   scan("¿ ¿¿y? ?o?decimal ??sino no es?? 2init entero si rora mientras");
