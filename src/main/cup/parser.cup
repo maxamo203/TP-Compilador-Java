@@ -32,6 +32,16 @@ terminal END_WHILE;
 terminal INIT;
 terminal IDENTIFIER;
 terminal COLON;
+terminal COMMA;
+terminal SEMICOLON;
+terminal OPEN_LLAVE;
+terminal CLOSE_LLAVE;
+terminal LESS;
+terminal LESSOREQUAL;
+terminal EQUAL;
+terminal GREATER;
+terminal GREATEROREQUAL;
+
 terminal GETPENULTIMATEPOSITION;
 terminal TRIANGULO;
 terminal LEER;
@@ -39,11 +49,23 @@ terminal ESCRIBIR;
 
 // Non Terminals
 non terminal sentence;
+non terminal type;
 non terminal assignment;
 non terminal expression;
 non terminal term;
 non terminal factor;
 non terminal programa;
+non terminal bloquedeclaracion;
+non terminal root;
+non terminal listavariables;
+non terminal listaIds;
+non terminal while;
+non terminal expresionTexto;
+
+non terminal selection;
+non terminal condition;
+non terminal comparation;
+
 
 // Start Symbol Definition
 start with sentence;

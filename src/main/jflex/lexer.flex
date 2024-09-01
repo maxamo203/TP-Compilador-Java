@@ -109,7 +109,8 @@ Comment = {StartComment}(.)*{EndComment}
   {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
                                             else{return symbol(ParserSym.IDENTIFIER, yytext());}}
   /* Constants */
-  {IntegerConstant}                        { return symbol(ParserSym.INTEGER_CONSTANT, yytext()); }
+  {IntegerConstant}                        { { if(Integer.parseInt(yytext()) >= MAX_INT){ throw new InvalidIntegerException(yytext()); }
+                                            else{return symbol(ParserSym.INTEGER_CONSTANT, yytext());}} }
   {StringConstant}                         {if(yylength() > MAX_STRING+2){throw new InvalidLengthException(yytext());}
                                             else{return symbol(ParserSym.STRING_CONSTANT, yytext());}}
   {FloatConstant}                           { 

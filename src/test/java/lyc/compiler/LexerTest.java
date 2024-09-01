@@ -139,6 +139,26 @@ public class LexerTest {
   //     nextToken();
   //   });
   // }
+  @Test
+  public void invalidPositiveIntegerConstantValue1() {
+    assertThrows(InvalidIntegerException.class, () -> {
+      scan("%d".formatted(92233720));
+      nextToken();
+    });
+  }
+  @Test
+  public void invalidPositiveIntegerConstantValue2() {
+    assertThrows(InvalidIntegerException.class, () -> {
+      scan("%d".formatted(65536));
+      nextToken();
+    });
+  }
+  @Test
+  public void validPositiveIntegerConstantValue()  throws Exception{
+    scan("65535");
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    
+  }
 
   // @Test
   // public void invalidNegativeIntegerConstantValue() {
