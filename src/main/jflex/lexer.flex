@@ -131,7 +131,7 @@ Comment = {StartComment}(.)*{EndComment}
         if (value == Float.POSITIVE_INFINITY || value == Float.NEGATIVE_INFINITY) {
             throw new FloatOutOfRangeException(yytext());
         }
-    return symbol(ParserSym.FLOAT_CONSTANT, value); 
+    return symbol(ParserSym.FLOAT_CONSTANT, yytext()); 
     }
 
   /* operators */

@@ -100,6 +100,8 @@ sentence ::= selection {:System.out.println("if");:};
 sentence ::= while {:System.out.println("un while");:};
 assignment ::= IDENTIFIER:id ASSIG expression {: System.out.println("Assignment: " + id ); :};
 assignment ::= IDENTIFIER ASSIG expresionTexto {: System.out.println("Text Assignment"); :};
+assignment ::= IDENTIFIER ASSIG triangulo {: System.out.println("triangulo Assignment"); :};
+assignment ::= IDENTIFIER ASSIG getPenultimatePosition {: System.out.println("GetPenultimatePosition Assignment"); :};
 expression ::= expression PLUS term {: System.out.println("+"); :};
 expression ::= expression SUB term {: System.out.println("-"); :};
 expression ::= term {: System.out.println("Expression = Term"); :};
@@ -108,6 +110,7 @@ term ::= term DIV factor {: System.out.println("/"); :};
 term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
+factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant Float: " + constant ); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
 expresionTexto ::= expresionTexto PLUS STRING_CONSTANT;
 expresionTexto ::= STRING_CONSTANT;
@@ -134,9 +137,9 @@ write ::= ESCRIBIR OPEN_BRACKET INTEGER_CONSTANT CLOSE_BRACKET {: System.out.pri
 write ::= ESCRIBIR OPEN_BRACKET FLOAT_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de flotante");:};
 
 triangulo ::= TRIANGULO OPEN_BRACKET expression COMMA expression COMMA expression CLOSE_BRACKET  {: System.out.println("triangulo");:};
-list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE;
+list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE {: System.out.println("list");:};
 
-list_elements ::= term COMMA list_elements;
-list_elements  ::= term;
+list_elements ::= list_elements COMMA expression {: System.out.println("list_elements");:};
+list_elements  ::= expression {: System.out.println("list_elements con expr");:};
 
 getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET list CLOSE_BRACKET {: System.out.println("getPenultimatePosition  ");:};

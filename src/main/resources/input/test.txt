@@ -19,15 +19,15 @@ cadena1 := "Hola Mundo"
 x := 10
 z := 20
 
-g := .99
+*-g := .99-*
 
 *-operaciones y triangulo-*
 triangulo1 := triangulo(x, 1+1, x)  *- y = "equilatero" -*
 triangulo2 := triangulo(0, 1/x, 0) *- y = "isóceles" -*
 triangulo3 := triangulo((32+5+x)*z, 1/x, 100) *- y = "escaleno" -*
 
-*-caso especial (GetPenultimatePosition)-*
-f := GetPenultimatePosition([1,.1,3,4.5,5,6.2,7]) *- f = 6 -*
+*-caso especial (getPenultimatePosition)-*
+f := getPenultimatePosition([1,.1,3,4.5,5,6.2,7]) *- f = 6 -*
 
 *-lecturas y escrituras-*
 leer(d)
