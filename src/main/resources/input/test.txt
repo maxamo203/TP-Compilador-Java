@@ -1,32 +1,64 @@
+*-inicializacion-*
 init{
-    *- Comentario laaaargoooooooo -*
-    a,b,c,d,e,f : entero
-    f : decimal
-    cadena : texto
+    a,b,c,d,e: Int
+    x,z : Int
+    f,g : Float
+    triangulo1, triangulo2, triangulo3 : String
+    cadena1, cadena2 : String
 }
-c=3
-a=1
-b=0
-e=22
 
-read(d)
-write(d)
+*-asignaciones-*
+c := 3
+a := 1
+b := 0
+e := 22
+cadena1 := "Hola Mundo!"
+cadena2 := "@unlam$!
 
-f=GetPenultimatePosition([1,2,3,4,5,6,7])
+x := 10
+z := 20
 
-si(a==1 o no es c==2){
-    b=3
+g := .99
+
+*-operaciones y triangulo-*
+triangulo1 := triangulo(x, 1+1, x)  *- y = "equilatero" -*
+triangulo2 := triangulo(0, 1/x, 0) *- y = "isóceles" -*
+triangulo3 := triangulo((32+5+x)*z, 1/x, 100) *- y = "escaleno" -*
+
+*-caso especial (GetPenultimatePosition)-*
+f := GetPenultimatePosition([1,.1,3,4.5,5,6.2,7]) *- f = 6 -*
+
+*-lecturas y escrituras-*
+leer(d)
+escribir(d)
+
+escribir(triangulo1)
+escribir(triangulo2)
+escribir(triangulo3)
+
+escribir(cadena1)
+escribir(cadena2)
+
+escribir("Chau Mundo!")
+
+escribir(f)
+
+*-condicionales-*
+si(a==(1+1) OR no es c==2){
+    b := 3
 }
-si(a>b y c>a){
-    b=5
+si(a>b AND c>a){
+    b := 5
 }
 sino{
-    b=3
+    b := 3
 }
-write(b)
+
+*-while-*
 mientras(a<b){
-    a=a+1
+    a := a+1
     write(a)
 }
+
+*-operaciones-*
 c=d*(e-21)/4
-write(cadena)

@@ -119,7 +119,7 @@ public class LexerTest {
   // }
   @Test
   public void otrasPalabrasReservadas() throws Exception{
-    scan("si y sino o no es init texto mientras *-sff-* decimal getPenultimatePosition triangulo");
+    scan("si AND sino OR NOT init String mientras *-sff-* Float getPenultimatePosition triangulo");
     assertThat(nextToken()).isEqualTo(ParserSym.IF);
     assertThat(nextToken()).isEqualTo(ParserSym.AND);
     assertThat(nextToken()).isEqualTo(ParserSym.ELSE);
