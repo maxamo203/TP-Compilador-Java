@@ -74,7 +74,6 @@ FloatConstant = ({Digit}+\.{Digit}+)|({Digit}+?\.{Digit}+)|({Digit}+\.{Digit}+?)
 Comment = {StartComment}(.)*{EndComment}
 %%
 
-
 /* keywords */
 
 <YYINITIAL> {

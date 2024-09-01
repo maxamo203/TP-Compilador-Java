@@ -1,14 +1,19 @@
 init{
     *- Comentario laaaargoooooooo -*
-    entero a,b,c,d,e
-    decimal f
-    texto cadena
+    a,b,c,d,e,f : entero
+    f : decimal
+    cadena : texto
 }
 c=3
 a=1
 b=0
-d=4
 e=22
+
+read(d)
+write(d)
+
+f=GetPenultimatePosition([1,2,3,4,5,6,7])
+
 si(a==1 o no es c==2){
     b=3
 }
@@ -18,7 +23,10 @@ si(a>b y c>a){
 sino{
     b=3
 }
+write(b)
 mientras(a<b){
     a=a+1
+    write(a)
 }
 c=d*(e-21)/4
+write(cadena)
