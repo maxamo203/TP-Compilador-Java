@@ -95,6 +95,22 @@ public class LexerTest {
       nextToken();
     });
   }
+//   @Test
+//   public void pruebaInit() throws Exception{
+//     scan("init{
+//     f:Int
+//     a,b,c,d,e: Int
+//     x,z : Int
+//     f,g : Float
+//     triangulo1, triangulo2, triangulo3 : String
+//     cadena1, cadena2 : String
+// }");
+// int token = nextToken();
+//     while(token!=ParserSym.EOF){
+//       System.out.println(token);
+//     }
+//     assertThat(true).isEqualTo(true);
+//   }
   // @Test
   // public void palabrasReservadas() throws Exception{
   //   scan("¿ ¿¿y? ?o?decimal ??sino no es?? 2init entero si rora mientras");
@@ -159,6 +175,14 @@ public class LexerTest {
     assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
     
   }
+  @Test
+  public void validPositiveIntegerConstantValue2()  throws Exception{
+    scan("\"Hola Mundo\"");
+    // assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    // assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.STRING_CONSTANT);
+    
+  }
 
   // @Test
   // public void invalidNegativeIntegerConstantValue() {
@@ -171,7 +195,7 @@ public class LexerTest {
 
   @Test
   public void assignmentWithExpressions() throws Exception {
-    scan("c=d*(e-21)/4");
+    scan("c:=d*(e-21)/4");
     assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
     assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
     assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);

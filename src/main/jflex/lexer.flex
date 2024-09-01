@@ -37,7 +37,7 @@ Plus = "+"
 Mult = "*"
 Sub = "-"
 Div = "/"
-Assig = "="
+Assig = ":="
 Colon = ":"
 OpenBracket = "("
 CloseBracket = ")"
@@ -80,7 +80,7 @@ Escribir = "escribir"
 WhiteSpace = {LineTerminator} | {Identation}
 Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Digit}+
-StringConstant = {Quote}({Letter}|{Digit})*{Quote}
+StringConstant = {Quote}({Letter}|{Digit}|[ ])*{Quote}
 FloatConstant = ({Digit}+\.{Digit}+)|({Digit}+?\.{Digit}+)|({Digit}+\.{Digit}+?)
 Comment = {StartComment}(.)*{EndComment}
 %%
@@ -91,6 +91,7 @@ Comment = {StartComment}(.)*{EndComment}
   {And}                                   {return symbol(ParserSym.AND);}
   {Or}                                    {return symbol(ParserSym.OR);}
   {Not}                                   {return symbol(ParserSym.NOT);}
+  {Colon}                                   { return symbol(ParserSym.COLON); }
 
   {Init}                                  {return symbol(ParserSym.INIT);}
   {Coma}                                    { return symbol(ParserSym.COMMA); }
@@ -141,7 +142,6 @@ Comment = {StartComment}(.)*{EndComment}
   {Assig}                                   { return symbol(ParserSym.ASSIG); }
   {OpenBracket}                             { return symbol(ParserSym.OPEN_BRACKET); }
   {CloseBracket}                            { return symbol(ParserSym.CLOSE_BRACKET); }
-  {Colon}                                   { return symbol(ParserSym.COLON); }
   /* whitespace */
   {WhiteSpace}                    {/* ignore */}
   {Comment}                       {/* ignore */}

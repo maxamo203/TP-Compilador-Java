@@ -1,5 +1,6 @@
 *-inicializacion-*
 init{
+    f:Int
     a,b,c,d,e: Int
     x,z : Int
     f,g : Float
@@ -12,8 +13,8 @@ c := 3
 a := 1
 b := 0
 e := 22
-cadena1 := "Hola Mundo!"
-cadena2 := "@unlam$!
+cadena1 := "Hola Mundo"
+*-cadena2 := "@unlam$!-*
 
 x := 10
 z := 20
