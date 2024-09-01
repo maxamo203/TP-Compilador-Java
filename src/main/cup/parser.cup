@@ -32,8 +32,11 @@ terminal END_WHILE;
 terminal INIT;
 terminal IDENTIFIER;
 terminal COLON;
-terminal COMMA;
 terminal SEMICOLON;
+terminal COMMA;
+terminal PUNTOYCOMA;
+terminal OPEN_CORCHETE;
+terminal CLOSE_CORCHETE;
 terminal OPEN_LLAVE;
 terminal CLOSE_LLAVE;
 terminal LESS;
@@ -65,14 +68,36 @@ non terminal expresionTexto;
 non terminal selection;
 non terminal condition;
 non terminal comparation;
+non terminal logic_operator;
+non terminal read;
+non terminal write;
+
+non terminal triangulo;
+non terminal getPenultimatePosition;
+non terminal list_elements;
+non terminal list;
 
 
 // Start Symbol Definition
-start with sentence;
+start with root;
 
-
-sentence ::= assignment {: System.out.println("End"); :};
+root ::= bloquedeclaracion programa {: System.out.println("Fin con variables");:};
+root ::= programa {:System.out.println("Fin sin variables");:};
+bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE {: System.out.println("Bloque de variables con variables");:};
+bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE {: System.out.println("Bloque de variables sin variables");:};
+listavariables ::= listaIds COLON type;
+listaIds ::= listaIds COMMA IDENTIFIER:id {:System.out.println("Id: "+ id + "|y algo mas");:};
+listaIds ::= IDENTIFIER:id {:System.out.println("Id: "+ id);:};
+type ::= TYPE_STRING:tipo {:System.out.println("tipo: "+ tipo);:};
+type ::= TYPE_FLOAT:tipo {:System.out.println("tipo: "+ tipo);:};
+type ::= TYPE_INTEGER:tipo {:System.out.println("tipo: "+ tipo);:};
+programa ::= programa sentence {:System.out.println("Instruccion mas algo");:};
+programa ::= sentence {:System.out.println("Instruccion");:};
+sentence ::= assignment {: System.out.println("asigno valores"); :};
+sentence ::= selection {:System.out.println("if");:};
+sentence ::= while {:System.out.println("un while");:};
 assignment ::= IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
+assignment ::= IDENTIFIER ASSIG expresionTexto {: System.out.println("Text Assignment"); :};
 expression ::= expression PLUS term {: System.out.println("+"); :};
 expression ::= expression SUB term {: System.out.println("-"); :};
 expression ::= term {: System.out.println("Expression = Term"); :};
@@ -82,3 +107,34 @@ term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
+expresionTexto ::= expresionTexto PLUS STRING_CONSTANT;
+expresionTexto ::= STRING_CONSTANT;
+
+selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE ELSE OPEN_LLAVE  programa CLOSE_LLAVE {: System.out.println( "Seleccion con else" ); :};
+selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "Seleccion sin else" ); :};
+
+while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "while" ); :};
+
+condition ::= expression comparation expression;
+condition ::= expression comparation expression logic_operator expression comparation expression;
+condition ::= NOT expression comparation expression;
+logic_operator ::= AND;
+logic_operator ::= OR;
+comparation ::= LESS;
+comparation ::= LESSOREQUAL;
+comparation ::= EQUAL;
+comparation ::= GREATER;
+comparation ::= GREATEROREQUAL;
+
+read ::= LEER OPEN_BRACKET IDENTIFIER CLOSE_BRACKET {: System.out.println("Lectura");:};
+write ::= ESCRIBIR OPEN_BRACKET STRING_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de string");:};
+write ::= ESCRIBIR OPEN_BRACKET INTEGER_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de entero");:};
+write ::= ESCRIBIR OPEN_BRACKET FLOAT_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de flotante");:};
+
+triangulo ::= TRIANGULO OPEN_BRACKET expression COMMA expression COMMA expression CLOSE_BRACKET  {: System.out.println("triangulo");:};
+list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE;
+
+list_elements ::= term COMMA list_elements;
+list_elements  ::= term;
+
+getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET list CLOSE_BRACKET {: System.out.println("getPenultimatePosition  ");:};
