@@ -82,6 +82,7 @@ non terminal list;
 start with root;
 
 root ::= bloquedeclaracion programa {: System.out.println("Fin con variables");:};
+root ::= bloquedeclaracion {: System.out.println("Fin solo variables");:};
 root ::= programa {:System.out.println("Fin sin variables");:};
 bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE {: System.out.println("Bloque de variables con variables");:};
 bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE {: System.out.println("Bloque de variables sin variables");:};

@@ -41,6 +41,12 @@ Assig = "="
 Colon = ":"
 OpenBracket = "("
 CloseBracket = ")"
+Coma = ","
+PuntoyComa = ";"
+OpenCorchete = "["
+CloseCorchete = "]"
+OpenLlave = "{"
+CloseLlave = "}"
 Letter = [a-zA-Z]
 Digit = [0-9]
 StartComment = "*-"
@@ -87,7 +93,12 @@ Comment = {StartComment}(.)*{EndComment}
   {Not}                                   {return symbol(ParserSym.NOT);}
 
   {Init}                                  {return symbol(ParserSym.INIT);}
-
+  {Coma}                                    { return symbol(ParserSym.COMMA); }
+  {PuntoyComa}                              { return symbol(ParserSym.PUNTOYCOMA); }
+  {OpenCorchete}                            { return symbol(ParserSym.OPEN_CORCHETE); }
+  {CloseCorchete}                           { return symbol(ParserSym.CLOSE_CORCHETE); }
+  {OpenLlave}                               { return symbol(ParserSym.OPEN_LLAVE); }
+  {CloseLlave}                              { return symbol(ParserSym.CLOSE_LLAVE);}
   {TypeFloat}                             {return symbol(ParserSym.TYPE_FLOAT);}
   {TypeInt}                               {return symbol(ParserSym.TYPE_INTEGER);}
   {TypeString}                            {return symbol(ParserSym.TYPE_STRING);}
