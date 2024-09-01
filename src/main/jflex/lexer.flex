@@ -38,6 +38,7 @@ Mult = "*"
 Sub = "-"
 Div = "/"
 Assig = "="
+Colon = ":"
 OpenBracket = "("
 CloseBracket = ")"
 Letter = [a-zA-Z]
@@ -124,7 +125,7 @@ Comment = {StartComment}(.)*{EndComment}
   {Assig}                                   { return symbol(ParserSym.ASSIG); }
   {OpenBracket}                             { return symbol(ParserSym.OPEN_BRACKET); }
   {CloseBracket}                            { return symbol(ParserSym.CLOSE_BRACKET); }
-
+  {Colon}                                   { return symbol(ParserSym.COLON); }
   /* whitespace */
   {WhiteSpace}                    {/* ignore */}
   {Comment}                       {/* ignore */}

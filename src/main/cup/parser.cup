@@ -31,7 +31,7 @@ terminal START_WHILE;
 terminal END_WHILE;
 terminal INIT;
 terminal IDENTIFIER;
-
+terminal COLON;
 terminal GETPENULTIMATEPOSITION;
 terminal TRIANGULO;
 terminal LEER;
@@ -43,9 +43,11 @@ non terminal assignment;
 non terminal expression;
 non terminal term;
 non terminal factor;
+non terminal programa;
 
 // Start Symbol Definition
 start with sentence;
+
 
 sentence ::= assignment {: System.out.println("End"); :};
 assignment ::= IDENTIFIER ASSIG expression {: System.out.println("Assignment"); :};
