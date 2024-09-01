@@ -60,6 +60,11 @@ Init = "init"
 And = "AND"
 Or = "OR"
 Not = "NOT"
+Mayor = ">"
+Menor = "<"
+MenorOigual = "<="
+MayorOigual = ">="
+Igual = "=="
 
 Trinagulo = "triangulo"
 GetPenultimatePosition = "getPenultimatePosition"
@@ -130,6 +135,12 @@ Comment = {StartComment}(.)*{EndComment}
   {Comment}                       {/* ignore */}
 }
 
+/* comparers */
+{Mayor}                                     { return symbol(ParserSym.GREATER); }
+{Menor}                                     { return symbol(ParserSym.LESS); }
+{MenorOigual}                               { return symbol(ParserSym.LESSOREQUAL); }
+{MayorOigual}                               { return symbol(ParserSym.GREATEROREQUAL); }
+{Igual}                                     { return symbol(ParserSym.EQUAL); }
 
 /* error fallback */
 [^]                              { throw new UnknownCharacterException(yytext()); }
