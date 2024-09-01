@@ -1,1 +1,24 @@
+init{
+    *- Comentario laaaargoooooooo -*
+    entero a,b,c,d,e
+    decimal f
+    texto cadena
+}
+c=3
+a=1
+b=0
+d=4
+e=22
+si(a==1 o no es c==2){
+    b=3
+}
+si(a>b y c>a){
+    b=5
+}
+sino{
+    b=3
+}
+mientras(a<b){
+    a=a+1
+}
 c=d*(e-21)/4
