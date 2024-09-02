@@ -78,7 +78,7 @@ mientras(a<b){
         }
     }
     a := a+1
-    write(a)
+    escribir(a)
 }
 
 *-operaciones-*

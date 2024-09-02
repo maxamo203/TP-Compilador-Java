@@ -105,6 +105,7 @@ listaFlotante ::= IDENTIFIER:id  {: System.out.println("Variable Flotante: " + i
 listaCadena ::= listaCadena COMMA IDENTIFIER:id {: System.out.println("Cadena:" + id );new SymbolTableGenerator().addSymbol(id.toString(),Symbol.STRING,"-",0); :};
 listaCadena ::= IDENTIFIER:id  {: System.out.println("Cadena:" + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.STRING,"-",0); :};
 
+
 programa ::= programa sentence {:System.out.println("Instruccion mas algo");:};
 programa ::= sentence {:System.out.println("Instruccion");:};
 sentence ::= assignment {: System.out.println("asigno valores"); :};
@@ -122,10 +123,10 @@ term ::= term MULT factor {: System.out.println("*"); :};
 term ::= term DIV factor {: System.out.println("/"); :};
 term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
-factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+id.toString(),Symbol.INTEGER,"-",0); :};
+factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,"-",0); :};
 factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.FLOAT,constant.toString(),0); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
-expresionTexto ::= STRING_CONSTANT:cte {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length);:};
+expresionTexto ::= STRING_CONSTANT:cte {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);:};
 
 selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE ELSE OPEN_LLAVE  programa CLOSE_LLAVE {: System.out.println( "Seleccion con else" ); :};
 selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "Seleccion sin else" ); :};
