@@ -192,7 +192,23 @@ public class LexerTest {
   //   });
   // }
 
-
+  @Test
+  public void getpenultimate()  throws Exception{
+    scan("f := getPenultimatePosition([1,.1])");
+    // assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    // assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
+    assertThat(nextToken()).isEqualTo(ParserSym.ASSIG);
+    assertThat(nextToken()).isEqualTo(ParserSym.GETPENULTIMATEPOSITION);
+    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.OPEN_CORCHETE);
+    assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.COMMA);
+    assertThat(nextToken()).isEqualTo(ParserSym.FLOAT_CONSTANT);
+    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_CORCHETE);
+    assertThat(nextToken()).isEqualTo(ParserSym.CLOSE_BRACKET);
+    assertThat(nextToken()).isEqualTo(ParserSym.EOF);
+  }
   @Test
   public void assignmentWithExpressions() throws Exception {
     scan("c:=d*(e-21)/4");

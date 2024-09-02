@@ -98,6 +98,7 @@ programa ::= sentence {:System.out.println("Instruccion");:};
 sentence ::= assignment {: System.out.println("asigno valores"); :};
 sentence ::= selection {:System.out.println("if");:};
 sentence ::= while {:System.out.println("un while");:};
+sentence ::= read | write;
 assignment ::= IDENTIFIER:id ASSIG expression {: System.out.println("Assignment: " + id ); :};
 assignment ::= IDENTIFIER ASSIG expresionTexto {: System.out.println("Text Assignment"); :};
 assignment ::= IDENTIFIER ASSIG triangulo {: System.out.println("triangulo Assignment"); :};
@@ -120,21 +121,20 @@ selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_
 
 while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "while" ); :};
 
-condition ::= expression comparation expression;
-condition ::= expression comparation expression logic_operator expression comparation expression;
-condition ::= NOT expression comparation expression;
-logic_operator ::= AND;
-logic_operator ::= OR;
-comparation ::= LESS;
-comparation ::= LESSOREQUAL;
-comparation ::= EQUAL;
-comparation ::= GREATER;
-comparation ::= GREATEROREQUAL;
+condition ::= expression comparation expression {: System.out.println( "comparacion simple" ); :};
+condition ::= expression comparation expression logic_operator expression comparation expression {: System.out.println( "comparacion doble" ); :};
+condition ::= NOT expression comparation expression {: System.out.println( "comparacion negada" ); :};
+logic_operator ::= AND {: System.out.println( "and" ); :};
+logic_operator ::= OR {: System.out.println( "or" ); :};
+comparation ::= LESS {: System.out.println( "<" ); :};
+comparation ::= LESSOREQUAL {: System.out.println( "<=" ); :};
+comparation ::= EQUAL {: System.out.println( "==" ); :};
+comparation ::= GREATER {: System.out.println( ">" ); :};
+comparation ::= GREATEROREQUAL {: System.out.println( ">=" ); :};
 
 read ::= LEER OPEN_BRACKET IDENTIFIER CLOSE_BRACKET {: System.out.println("Lectura");:};
-write ::= ESCRIBIR OPEN_BRACKET STRING_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de string");:};
-write ::= ESCRIBIR OPEN_BRACKET INTEGER_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de entero");:};
-write ::= ESCRIBIR OPEN_BRACKET FLOAT_CONSTANT CLOSE_BRACKET {: System.out.println("Escritura de flotante");:};
+write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Escritura de numeros");:};
+write ::= ESCRIBIR OPEN_BRACKET expresionTexto CLOSE_BRACKET {: System.out.println("Escritura de texto");:};
 
 triangulo ::= TRIANGULO OPEN_BRACKET expression COMMA expression COMMA expression CLOSE_BRACKET  {: System.out.println("triangulo");:};
 list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE {: System.out.println("list");:};
