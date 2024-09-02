@@ -13,7 +13,7 @@ public final class LexerFactory {
         Reader reader = new StringReader(input);
         return create(reader);
     }
-
+    
     public static Lexer create(Reader reader) {
         return new Lexer(reader);
     }
