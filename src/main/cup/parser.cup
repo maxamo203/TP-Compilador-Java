@@ -1,7 +1,8 @@
 package lyc.compiler;
 
 import java_cup.runtime.*;
-
+import lyc.compiler.files.SymbolTableGenerator;
+import lyc.compiler.files.Symbol;
 class Parser;
 
 
@@ -61,7 +62,10 @@ non terminal programa;
 non terminal bloquedeclaracion;
 non terminal root;
 non terminal listavariables;
-non terminal listaIds;
+non terminal listaFlotante;
+non terminal listaCadena;
+non terminal listaEnteros;
+non terminal variableIniciada;
 non terminal while;
 non terminal expresionTexto;
 
@@ -84,15 +88,23 @@ start with root;
 root ::= bloquedeclaracion programa {: System.out.println("Fin con variables");:};
 root ::= bloquedeclaracion {: System.out.println("Fin solo variables");:};
 root ::= programa {:System.out.println("Fin sin variables");:};
-bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE {: System.out.println("Bloque de variables con variables");:};
 bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE {: System.out.println("Bloque de variables sin variables");:};
-listavariables ::= listavariables listaIds COLON type;
-listavariables ::= listaIds COLON type;
-listaIds ::= listaIds COMMA IDENTIFIER:id {:System.out.println("Id: "+ id + "|y algo mas");:};
-listaIds ::= IDENTIFIER:id {:System.out.println("Id: "+ id);:};
-type ::= TYPE_STRING:tipo {:System.out.println("tipo: "+ "String");:};
-type ::= TYPE_FLOAT:tipo {:System.out.println("tipo: "+ "Float");:};
-type ::= TYPE_INTEGER:tipo {:System.out.println("tipo: "+ "Int");:};
+bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE {: System.out.println("Bloque de variables con variables");:};
+listavariables ::= listavariables variableIniciada;
+listavariables ::= variableIniciada;
+variableIniciada ::= listaEnteros COLON TYPE_INTEGER {: System.out.println("Entero");:};
+variableIniciada ::= listaCadena COLON TYPE_STRING {: System.out.println("Cadena");:};
+variableIniciada ::= listaFlotante COLON TYPE_FLOAT {: System.out.println("Flotante"); :};
+
+listaEnteros ::= listaEnteros COMMA IDENTIFIER:id {: System.out.println("Variable Entera: " + id ); new SymbolTableGenerator().addSymbol(id.toString(),Symbol.INTEGER,"-",0);:};
+listaEnteros ::= IDENTIFIER:id  {: System.out.println("Variable Entera: " + id); new SymbolTableGenerator().addSymbol(id.toString(),Symbol.INTEGER,"-",0);:};
+
+listaFlotante ::= listaFlotante COMMA IDENTIFIER:id {: System.out.println("Variable Flotante: " + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.FLOAT,"-",0); :};
+listaFlotante ::= IDENTIFIER:id  {: System.out.println("Variable Flotante: " + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.FLOAT,"-",0); :};
+
+listaCadena ::= listaCadena COMMA IDENTIFIER:id {: System.out.println("Cadena:" + id );new SymbolTableGenerator().addSymbol(id.toString(),Symbol.STRING,"-",0); :};
+listaCadena ::= IDENTIFIER:id  {: System.out.println("Cadena:" + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.STRING,"-",0); :};
+
 programa ::= programa sentence {:System.out.println("Instruccion mas algo");:};
 programa ::= sentence {:System.out.println("Instruccion");:};
 sentence ::= assignment {: System.out.println("asigno valores"); :};
@@ -110,11 +122,10 @@ term ::= term MULT factor {: System.out.println("*"); :};
 term ::= term DIV factor {: System.out.println("/"); :};
 term ::= factor {: System.out.println("Term = factor"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
-factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); :};
-factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant Float: " + constant ); :};
+factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+id.toString(),Symbol.INTEGER,"-",0); :};
+factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.FLOAT,constant.toString(),0); :};
 factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
-expresionTexto ::= expresionTexto PLUS STRING_CONSTANT;
-expresionTexto ::= STRING_CONSTANT;
+expresionTexto ::= STRING_CONSTANT:cte {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length);:};
 
 selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE ELSE OPEN_LLAVE  programa CLOSE_LLAVE {: System.out.println( "Seleccion con else" ); :};
 selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "Seleccion sin else" ); :};
