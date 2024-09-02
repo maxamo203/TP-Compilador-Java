@@ -11,12 +11,13 @@ init{
 *-asignaciones-*
 c := 3
 a := 1
-b := 0
-e := 22
+*-
+    b := 0
+        e := 22-*
 cadena1 := "Hola Mundo"
 *-cadena2 := "@unlam$!-*
 
-x := 10
+x := 10 
 z := 20
 
 g := .99

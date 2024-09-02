@@ -82,7 +82,7 @@ Identifier = {Letter} ({Letter}|{Digit})*
 IntegerConstant = {Digit}+
 StringConstant = {Quote}({Letter}|{Digit}|[ ])*{Quote}
 FloatConstant = ({Digit}+\.{Digit}+)|({Digit}+?\.{Digit}+)|({Digit}+\.{Digit}+?)
-Comment = {StartComment}(.)*{EndComment}
+Comment = {StartComment}(.|{WhiteSpace})*?{EndComment}
 %%
 
 /* keywords */
