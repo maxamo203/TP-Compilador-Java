@@ -58,6 +58,11 @@ si(a>b AND c>a){
 sino{
     b := 3
 }
+¿a>b AND c>a?{
+    ¿¿NOT 3 <4??{
+        escribir("hola universo")
+    }
+}
 
 *-while-*
 mientras(a<b){

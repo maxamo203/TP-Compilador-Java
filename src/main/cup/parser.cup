@@ -166,3 +166,7 @@ list_elements ::= list_elements COMMA expression {: System.out.println("list_ele
 list_elements  ::= expression {: System.out.println("list_elements con expr");:};
 
 getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET list CLOSE_BRACKET {: System.out.println("getPenultimatePosition  ");:};
+
+//EN CASO DE QUILOMBO, SACAR LAS DOS LINEAS DE ABAJO 👍
+selection ::= START_IF condition END_IF OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "Seleccion sin else ¿?" ); :};
+while ::= START_WHILE condition END_WHILE OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "while ¿¿??" ); :};

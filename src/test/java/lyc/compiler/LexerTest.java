@@ -111,28 +111,20 @@ public class LexerTest {
 //     }
 //     assertThat(true).isEqualTo(true);
 //   }
-  // @Test
-  // public void palabrasReservadas() throws Exception{
-  //   scan("¿ ¿¿y? ?o?decimal ??sino no es?? 2init entero si rora mientras");
-  //   assertThat(nextToken()).isEqualTo(ParserSym.START_IF);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.START_WHILE);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.AND);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.OR);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.TYPE_FLOAT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.ELSE);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.NOT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.INTEGER_CONSTANT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.INIT);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.TYPE_INTEGER);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.IF);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.IDENTIFIER);
-  //   assertThat(nextToken()).isEqualTo(ParserSym.WHILE);
-  // }
+  @Test
+  public void signos() throws Exception{
+    scan("¿¿¿???");
+    assertThat(nextToken()).isEqualTo(ParserSym.START_WHILE);
+    assertThat(nextToken()).isEqualTo(ParserSym.START_IF);
+    assertThat(nextToken()).isEqualTo(ParserSym.END_WHILE);
+    assertThat(nextToken()).isEqualTo(ParserSym.END_IF);
+  }
+  @Test
+  public void signos2() throws Exception{
+    scan("¿¿¿¿");
+    assertThat(nextToken()).isEqualTo(ParserSym.START_WHILE);
+    assertThat(nextToken()).isEqualTo(ParserSym.START_WHILE);
+  }
   @Test
   public void otrasPalabrasReservadas() throws Exception{
     scan("si AND sino OR NOT init String mientras *-sff-* Float getPenultimatePosition triangulo");

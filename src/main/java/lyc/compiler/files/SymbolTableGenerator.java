@@ -20,12 +20,16 @@ public class SymbolTableGenerator implements FileGenerator{
             fileWriter.write(entry.getValue().toString() + "\n");
         }
     }
-    public static void addSymbol(String name, int type, String value, int length){
+    public static int addSymbol(String name, int type, String value, int length){
+        if(symbolTable.containsKey(name)){
+            return -1;
+        }
         symbolTable.put(name, new Symbol(name, type, value, length));
+        return 0;
     }
-    public static void addSymbol( Symbol symbol){
-        symbolTable.put(symbol.getNombre(), symbol);
-    }
+    // public static void addSymbol( Symbol symbol){
+    //     symbolTable.put(symbol.getNombre(), symbol);
+    // }
     public static Symbol getSymbol(String name){
         return symbolTable.get(name);
     }
