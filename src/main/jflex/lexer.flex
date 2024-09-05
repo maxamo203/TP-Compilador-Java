@@ -105,13 +105,13 @@ Comment = {StartComment}(.|{WhiteSpace})*?{EndComment}
   {TypeString}                            {return symbol(ParserSym.TYPE_STRING);}
 
   {If}                                    {return symbol(ParserSym.IF);}
-  /*{StartIf}                               {return symbol(ParserSym.START_IF);}*/
-  /*{EndIf}                                 {return symbol(ParserSym.END_IF);}*/
+  {StartIf}                               {return symbol(ParserSym.START_IF);}
+  {EndIf}                                 {return symbol(ParserSym.END_IF);}
   {Else}                                  {return symbol(ParserSym.ELSE);}
 
   {While}                                   {return symbol(ParserSym.WHILE);}
-  /*{StartWhile}                            {return symbol(ParserSym.START_WHILE);}*/
-  /*{EndWhile}                              {return symbol(ParserSym.END_WHILE);}*/
+  {StartWhile}                            {return symbol(ParserSym.START_WHILE);}
+  {EndWhile}                              {return symbol(ParserSym.END_WHILE);}
 
   {GetPenultimatePosition}                  {return symbol(ParserSym.GETPENULTIMATEPOSITION);}
   {Trinagulo}                               {return symbol(ParserSym.TRIANGULO);}  
