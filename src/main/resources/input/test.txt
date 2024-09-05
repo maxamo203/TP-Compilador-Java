@@ -11,9 +11,9 @@ init{
 *-asignaciones-*
 c := 3
 a := 1
-*-
-    b := 0
-        e := 22-*
+
+b := 0
+e := 22
 cadena1 := "Hola Mundo"
 *-cadena2 := "@unlam$!-*
 
@@ -89,3 +89,4 @@ mientras(a<b){
 
 *-operaciones-*
 c:=d*(e-21)/4
+asd := -d*(-e-21)/-4

@@ -127,12 +127,13 @@ assignment ::= IDENTIFIER:id ASSIG expression {: System.out.println("Assignment:
 assignment ::= IDENTIFIER ASSIG expresionTexto {: System.out.println("Text Assignment"); :};
 assignment ::= IDENTIFIER ASSIG triangulo {: System.out.println("triangulo Assignment"); :};
 assignment ::= IDENTIFIER ASSIG getPenultimatePosition {: System.out.println("GetPenultimatePosition Assignment"); :};
-expression ::= expression PLUS term {: System.out.println("+"); :};
-expression ::= expression SUB term {: System.out.println("-"); :};
+expression ::= expression PLUS term {: System.out.println("+ suma"); :};
+expression ::= expression SUB term {: System.out.println("- resta"); :};
 expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("*"); :};
-term ::= term DIV factor {: System.out.println("/"); :};
+term ::= term MULT factor {: System.out.println("* multiplicacion"); :};
+term ::= term DIV factor {: System.out.println("/ division"); :};
 term ::= factor {: System.out.println("Term = factor"); :};
+factor ::= SUB factor {: System.out.println("- unario"); :};
 factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
 factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,"-",0); :};
 factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.FLOAT,constant.toString(),0); :};
