@@ -17,9 +17,17 @@ e := 22
 cadena1 := "Hola Mundo"
 *-cadena2 := "@unlam$!-*
 
+cadenaLargaJusta := "1234567890123456789012345678901234567890"
+*-cadenaLarga := "12345678901234567890123456789012345678901"-* *-String muy largo-*
+
+idlargo89012345678901234567890 := 0
+*-idlargo890123456789012345678901 := 0-* *-Id muy largo-*
+
+enteroGrandeJusto := 65535
+*-enteroGrande := 65536-* *-Id muy grande-*
+
 x := 10 
 z := 20
-
 g := .99
 
 *-operaciones y triangulo-*
