@@ -62,11 +62,11 @@ non terminal programa;
 non terminal bloquedeclaracion;
 non terminal root;
 non terminal listavariables;
-non terminal listaFlotante;
-non terminal listaCadena;
-non terminal listaEnteros;
+//non terminal listaFlotante;
+//non terminal listaCadena;
+//non terminal listaEnteros;
 non terminal listaIds;
-non terminal variableIniciada;
+//non terminal variableIniciada;
 non terminal while;
 non terminal expresionTexto;
 
