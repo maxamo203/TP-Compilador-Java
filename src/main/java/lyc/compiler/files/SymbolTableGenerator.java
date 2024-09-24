@@ -20,7 +20,7 @@ public class SymbolTableGenerator implements FileGenerator{
             fileWriter.write(entry.getValue().toString() + "\n");
         }
     }
-    public static int addSymbol(String name, int type, String value, int length){
+    public static int addSymbol(String name, String type, String value, int length){
         if(symbolTable.containsKey(name)){
             return -1;
         }

@@ -3,4 +3,5 @@
 /.idea/
 /build.xml
 /cup-java-minijava.iml
+.project
 git branch -M main

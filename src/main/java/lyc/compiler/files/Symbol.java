@@ -2,19 +2,19 @@ package lyc.compiler.files;
 
 public class Symbol {
     // Definimos constantes estáticas para representar los tipos de datos
-    public static final int UNKNOWN = 0;
-    public static final int INTEGER = 1;
-    public static final int FLOAT = 2;
-    public static final int STRING = 3; 
+    public static final String UNKNOWN = "UNKNOWN";
+    public static final String INTEGER = "CTE_INTEGER";
+    public static final String FLOAT = "CTE_FLOAT";
+    public static final String STRING = "CTE_STRING"; 
 
     private String nombre;
-    private int tipoDato;
+    private String tipoDato;
     private String valor;
     private int longitud;
 
     
 
-    public Symbol(String nombre, int tipoDato, String valor, int longitud) {
+    public Symbol(String nombre, String tipoDato, String valor, int longitud) {
         this.nombre = nombre;
         this.tipoDato = tipoDato;
         this.valor = valor;
@@ -33,11 +33,11 @@ public class Symbol {
         this.nombre = nombre;
     }
 
-    public int getTipoDato() {
+    public String getTipoDato() {
         return tipoDato;
     }
 
-    public void setTipoDato(int tipoDato) {
+    public void setTipoDato(String tipoDato) {
         this.tipoDato = tipoDato;
     }
 
