@@ -34,6 +34,6 @@ public class IntermediateCodeGenerator implements FileGenerator {
         fileWriter.write("TODO");
         Nodo raiz = Nodo.crearNodo("=", Nodo.crearHijo("a"), Nodo.crearHijo("a"));
         
-        Graphviz.fromGraph(graficarNodo(Punteros.p_triangulo)).width(700).render(Format.PNG).toFile(new java.io.File("target/output/intermediate-code.png"));
+        Graphviz.fromGraph(graficarNodo(Punteros.p_triangulo)).width(7000).render(Format.PNG).toFile(new java.io.File("target/output/intermediate-code.png"));
     }
 }

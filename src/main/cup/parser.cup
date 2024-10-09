@@ -252,8 +252,41 @@ triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.cr
                 Punteros.p_triangulo = Nodo.crearNodoDummy(Punteros.p_triangulo, Nodo.crearNodo("=",Nodo.crearHijo("@tri3"), Punteros.p_expresion));
                 :}
             CLOSE_BRACKET  
-            {: System.out.println("triangulo");:};
+            {: System.out.println("triangulo");
+            Nodo comp1 = Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri2"));
+            Nodo comp2 = Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3"));
+            Nodo comp3 = Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3"));
+            Nodo comp4 = Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri3"));
+            Nodo cuerpo1 = Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_equilatero"));
+            Nodo cuerpo2 = Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles"));
+            Nodo cuerpo3 = Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles"));
+            Nodo cuerpo4 = Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles"));
+            Nodo cuerpo5 = Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_escaleno"));
+            Nodo miniIf1 = Nodo.crearNodo("IF",comp2,Nodo.crearNodo("ELSE",cuerpo1,cuerpo2));
+            Nodo miniIf2 = Nodo.crearNodo("IF",comp4,Nodo.crearNodo("ELSE",cuerpo4,cuerpo5));
+            Nodo medioIf = Nodo.crearNodo("IF",comp3,Nodo.crearNodo("ELSE",cuerpo3,miniIf2));
 
+            Punteros.p_triangulo = Nodo.crearNodoDummy(Punteros.p_triangulo,Nodo.crearNodo("IF",comp1,
+                        Nodo.crearNodo("ELSE",miniIf1,medioIf)));
+            :};
+// a,b,c
+// if(a==b){
+//     if(b==c){
+//         equilatero
+//     }else{
+//         isosceles
+//     }
+// }else{
+//     if(b==c){
+//         isosceles
+//     }else{
+//         if(a==c){
+//             isosceles
+//         }else{
+//             escaleno
+//         }
+//     }
+// }
 list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE 
     {: System.out.println("list");:};
 
