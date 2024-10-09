@@ -9,6 +9,7 @@ import java.io.IOException;
 public class SymbolTableGenerator implements FileGenerator{
 
     private static Map<String, Symbol> symbolTable = new HashMap<>();
+    public static int pruba = 4;
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
         // addSymbol("a", Symbol.INTEGER, "5", 4);

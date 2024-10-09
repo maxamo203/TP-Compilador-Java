@@ -2,7 +2,7 @@ package lyc.compiler.files;
 
 import java.io.FileWriter;
 import java.io.IOException;
-
+import java.util.UUID;
 import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.*;
 import static guru.nidi.graphviz.model.Factory.*;
@@ -15,7 +15,10 @@ public class IntermediateCodeGenerator implements FileGenerator {
             return mutGraph();
         }
 
-        MutableNode nodoActual = mutNode(nodo.getPayload());
+        // Creamos un nuevo nodo cada vez, sin importar si su contenido es igual
+        MutableNode nodoActual = mutNode(nodo.getPayload()+"_"+UUID.randomUUID().toString().substring(0, 4));
+
+        // Graficamos recursivamente los nodos hijos
         if (nodo.getLeft() != null) {
             nodoActual.addLink(graficarNodo(nodo.getLeft()).rootNodes().iterator().next());
         }
@@ -29,7 +32,8 @@ public class IntermediateCodeGenerator implements FileGenerator {
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
         fileWriter.write("TODO");
-        Nodo raiz = Nodo.crearNodo("=", Nodo.crearHijo("a"), Nodo.crearHijo("b"));
-        Graphviz.fromGraph(graficarNodo(raiz)).width(700).render(Format.PNG).toFile(new java.io.File("target/output/intermediate-code.png"));
+        Nodo raiz = Nodo.crearNodo("=", Nodo.crearHijo("a"), Nodo.crearHijo("a"));
+        
+        Graphviz.fromGraph(graficarNodo(Punteros.p_triangulo)).width(700).render(Format.PNG).toFile(new java.io.File("target/output/intermediate-code.png"));
     }
 }

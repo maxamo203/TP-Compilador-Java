@@ -1,5 +1,1 @@
-init{
-    f:Int
-    a,b,c,d,e: Int
-    a,b,c: Float
-}
+triangulo1 := triangulo(y/2 + 3, 1+1, x-1)

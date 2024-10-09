@@ -3,6 +3,8 @@ package lyc.compiler;
 import java_cup.runtime.*;
 import lyc.compiler.files.SymbolTableGenerator;
 import lyc.compiler.files.Symbol;
+import lyc.compiler.files.Nodo;
+import lyc.compiler.files.Punteros;
 class Parser;
 
 
@@ -82,71 +84,195 @@ non terminal list;
 // Start Symbol Definition
 start with root;
 
-root ::= bloquedeclaracion programa {: System.out.println("Fin con variables");:};
-root ::= bloquedeclaracion {: System.out.println("Fin solo variables");:};
-root ::= programa {:System.out.println("Fin sin variables");:};
-bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE {: System.out.println("Bloque de variables con variables");:};
-bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE {: System.out.println("Bloque de variables sin variables");:};
+root ::= bloquedeclaracion programa 
+    {: System.out.println("Fin con variables");:};
+
+root ::= bloquedeclaracion 
+    {: System.out.println("Fin solo variables");:};
+
+root ::= programa 
+    {:System.out.println("Fin sin variables");:};
+
+bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE 
+    {: System.out.println("Bloque de variables con variables");:};
+
+bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE 
+    {: System.out.println("Bloque de variables sin variables");:};
+
 listavariables ::= listavariables listaIds COLON type;
 listavariables ::= listaIds COLON type;
-listaIds ::= listaIds COMMA IDENTIFIER:id {:System.out.println("Id: "+ id + "|y algo mas");new SymbolTableGenerator().addSymbol(id.toString(),Symbol.UNKNOWN,"-",0);:};
-listaIds ::= IDENTIFIER:id {:System.out.println("Id: "+ id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.UNKNOWN,"-",0);:};
-type ::= TYPE_STRING:tipo {:System.out.println("tipo: "+ "String");:};
-type ::= TYPE_FLOAT:tipo {:System.out.println("tipo: "+ "Float");:};
-type ::= TYPE_INTEGER:tipo {:System.out.println("tipo: "+ "Int");:};
+listaIds ::= listaIds COMMA IDENTIFIER:id 
+    {:System.out.println("Id: "+ id + "|y algo mas");new SymbolTableGenerator().addSymbol(id.toString(),Symbol.UNKNOWN,"-",0);:};
+
+listaIds ::= IDENTIFIER:id 
+    {:System.out.println("Id: "+ id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.UNKNOWN,"-",0);:};
+
+type ::= TYPE_STRING:tipo 
+    {:System.out.println("tipo: "+ "String");:};
+
+type ::= TYPE_FLOAT:tipo 
+    {:System.out.println("tipo: "+ "Float");:};
+
+type ::= TYPE_INTEGER:tipo 
+    {:System.out.println("tipo: "+ "Int");:};
 
 
-programa ::= programa sentence {:System.out.println("Instruccion mas algo");:};
-programa ::= sentence {:System.out.println("Instruccion");:};
-sentence ::= assignment {: System.out.println("asigno valores"); :};
-sentence ::= selection {:System.out.println("if");:};
-sentence ::= while {:System.out.println("un while");:};
+programa ::= programa sentence 
+    {:System.out.println("Instruccion mas algo");:};
+
+programa ::= sentence 
+    {:System.out.println("Instruccion");:};
+
+sentence ::= assignment 
+    {: System.out.println("asigno valores"); :};
+
+sentence ::= selection 
+    {:System.out.println("if");:};
+
+sentence ::= while 
+    {:System.out.println("un while");:};
+
 sentence ::= read | write;
-assignment ::= IDENTIFIER:id ASSIG expression {: System.out.println("Assignment: " + id ); :};
-assignment ::= IDENTIFIER ASSIG expresionTexto {: System.out.println("Text Assignment"); :};
-assignment ::= IDENTIFIER ASSIG triangulo {: System.out.println("triangulo Assignment"); :};
-assignment ::= IDENTIFIER ASSIG getPenultimatePosition {: System.out.println("GetPenultimatePosition Assignment"); :};
-expression ::= expression PLUS term {: System.out.println("+ suma"); :};
-expression ::= expression SUB term {: System.out.println("- resta"); :};
-expression ::= term {: System.out.println("Expression = Term"); :};
-term ::= term MULT factor {: System.out.println("* multiplicacion"); :};
-term ::= term DIV factor {: System.out.println("/ division"); :};
-term ::= factor {: System.out.println("Term = factor"); :};
-factor ::= SUB factor {: System.out.println("- unario"); :};
-factor ::= IDENTIFIER:id  {: System.out.println("Id: " + id); :};
-factor ::= INTEGER_CONSTANT:constant {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,"-",0); :};
-factor ::= FLOAT_CONSTANT:constant {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.FLOAT,constant.toString(),0); :};
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Factor = (Expression)"); :};
-expresionTexto ::= STRING_CONSTANT:cte {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);:};
+assignment ::= IDENTIFIER:id ASSIG expression 
+    {: System.out.println("Assignment: " + id ); :};
 
-selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE ELSE OPEN_LLAVE  programa CLOSE_LLAVE {: System.out.println( "Seleccion con else" ); :};
-selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "Seleccion sin else" ); :};
+assignment ::= IDENTIFIER ASSIG expresionTexto 
+    {: System.out.println("Text Assignment"); :};
 
-while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "while" ); :};
+assignment ::= IDENTIFIER ASSIG triangulo 
+    {: System.out.println("triangulo Assignment"); :};
 
-condition ::= expression comparation expression {: System.out.println( "comparacion simple" ); :};
-condition ::= expression comparation expression logic_operator expression comparation expression {: System.out.println( "comparacion doble" ); :};
-condition ::= NOT expression comparation expression {: System.out.println( "comparacion negada" ); :};
-logic_operator ::= AND {: System.out.println( "and" ); :};
-logic_operator ::= OR {: System.out.println( "or" ); :};
-comparation ::= LESS {: System.out.println( "<" ); :};
-comparation ::= LESSOREQUAL {: System.out.println( "<=" ); :};
-comparation ::= EQUAL {: System.out.println( "==" ); :};
-comparation ::= GREATER {: System.out.println( ">" ); :};
-comparation ::= GREATEROREQUAL {: System.out.println( ">=" ); :};
+assignment ::= IDENTIFIER ASSIG getPenultimatePosition 
+    {: System.out.println("GetPenultimatePosition Assignment"); :};
 
-read ::= LEER OPEN_BRACKET IDENTIFIER CLOSE_BRACKET {: System.out.println("Lectura");:};
-write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET {: System.out.println("Escritura de numeros");:};
-write ::= ESCRIBIR OPEN_BRACKET expresionTexto CLOSE_BRACKET {: System.out.println("Escritura de texto");:};
+expression ::= expression PLUS term 
+    {: System.out.println("+ suma");
+    Punteros.p_expresion = Nodo.crearNodo("+", Punteros.p_expresion, Punteros.p_term); :};
 
-triangulo ::= TRIANGULO OPEN_BRACKET expression COMMA expression COMMA expression CLOSE_BRACKET  {: System.out.println("triangulo");:};
-list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE {: System.out.println("list");:};
+expression ::= expression SUB term 
+    {: System.out.println("- resta");
+    Punteros.p_expresion = Nodo.crearNodo("-", Punteros.p_expresion, Punteros.p_term);:};
 
-list_elements ::= list_elements COMMA expression {: System.out.println("list_elements");:};
-list_elements  ::= expression {: System.out.println("list_elements con expr");:};
+expression ::= term 
+    {: System.out.println("Expression = Term");
+    Punteros.p_expresion = Punteros.p_term;:};
 
-getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET list CLOSE_BRACKET {: System.out.println("getPenultimatePosition  ");:};
+term ::= term MULT factor 
+    {: System.out.println("* multiplicacion");
+    Punteros.p_term = Nodo.crearNodo("*", Punteros.p_term, Punteros.p_factor); :};
+
+term ::= term DIV factor 
+    {: System.out.println("/ division"); 
+    Punteros.p_term = Nodo.crearNodo("/", Punteros.p_term, Punteros.p_factor);:};
+
+term ::= factor 
+    {: System.out.println("Term = factor"); 
+    Punteros.p_term = Punteros.p_factor;:};
+
+
+factor ::= SUB factor 
+    {: System.out.println("- unario"); :};
+
+factor ::= IDENTIFIER:id  
+    {: System.out.println("Id: " + id);
+    Punteros.p_factor = Nodo.crearHijo(id+""); :};
+
+factor ::= INTEGER_CONSTANT:constant 
+    {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,"-",0);
+    Punteros.p_factor = Nodo.crearHijo(constant+""); :};
+
+factor ::= FLOAT_CONSTANT:constant 
+    {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.FLOAT,constant.toString(),0);
+        Punteros.p_factor = Nodo.crearHijo(constant+""); :};
+
+factor ::= OPEN_BRACKET expression CLOSE_BRACKET 
+    {: System.out.println("Factor = (Expression)"); :};
+
+expresionTexto ::= STRING_CONSTANT:cte 
+    {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);:};
+
+
+selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE ELSE OPEN_LLAVE  programa CLOSE_LLAVE 
+    {: System.out.println( "Seleccion con else" ); :};
+
+selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
+    {: System.out.println( "Seleccion sin else" ); :};
+
+
+while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
+    {: System.out.println( "while" ); :};
+
+
+condition ::= expression comparation expression 
+    {: System.out.println( "comparacion simple" ); :};
+
+condition ::= expression comparation expression logic_operator expression comparation expression 
+    {: System.out.println( "comparacion doble" ); :};
+
+condition ::= NOT expression comparation expression 
+    {: System.out.println( "comparacion negada" ); :};
+
+logic_operator ::= AND 
+    {: System.out.println( "and" ); :};
+
+logic_operator ::= OR 
+    {: System.out.println( "or" ); :};
+
+comparation ::= LESS 
+    {: System.out.println( "<" ); :};
+
+comparation ::= LESSOREQUAL 
+    {: System.out.println( "<=" ); :};
+
+comparation ::= EQUAL 
+    {: System.out.println( "==" ); :};
+
+comparation ::= GREATER 
+    {: System.out.println( ">" ); :};
+
+comparation ::= GREATEROREQUAL 
+    {: System.out.println( ">=" ); :};
+
+
+read ::= LEER OPEN_BRACKET IDENTIFIER CLOSE_BRACKET 
+    {: System.out.println("Lectura");:};
+
+write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET 
+    {: System.out.println("Escritura de numeros");:};
+
+write ::= ESCRIBIR OPEN_BRACKET expresionTexto CLOSE_BRACKET 
+    {: System.out.println("Escritura de texto");:};
+
+
+triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.crearNodo("=",Nodo.crearHijo("@tri1"), Punteros.p_expresion);:} 
+            COMMA expression {:
+                Punteros.p_triangulo = Nodo.crearNodoDummy(Punteros.p_triangulo, Nodo.crearNodo("=",Nodo.crearHijo("@tri2"), Punteros.p_expresion));
+                :}
+            COMMA expression {:
+                Punteros.p_triangulo = Nodo.crearNodoDummy(Punteros.p_triangulo, Nodo.crearNodo("=",Nodo.crearHijo("@tri3"), Punteros.p_expresion));
+                :}
+            CLOSE_BRACKET  
+            {: System.out.println("triangulo");:};
+
+list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE 
+    {: System.out.println("list");:};
+
+
+list_elements ::= list_elements COMMA expression 
+    {: System.out.println("list_elements");:};
+
+list_elements  ::= expression 
+    {: System.out.println("list_elements con expr");:};
+
+
+getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET list CLOSE_BRACKET 
+    {: System.out.println("getPenultimatePosition  ");:};
+
 
 //EN CASO DE QUILOMBO, SACAR LAS DOS LINEAS DE ABAJO 👍
-selection ::= START_IF condition END_IF OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "Seleccion sin else ¿?" ); :};
-while ::= START_WHILE condition END_WHILE OPEN_LLAVE programa CLOSE_LLAVE {: System.out.println( "while ¿¿??" ); :};
+selection ::= START_IF condition END_IF OPEN_LLAVE programa CLOSE_LLAVE 
+    {: System.out.println( "Seleccion sin else ¿?" ); :};
+
+while ::= START_WHILE condition END_WHILE OPEN_LLAVE programa CLOSE_LLAVE 
+    {: System.out.println( "while ¿¿??" ); :};
+

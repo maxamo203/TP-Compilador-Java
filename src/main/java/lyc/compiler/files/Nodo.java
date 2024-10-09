@@ -22,6 +22,9 @@ public class Nodo {
     public static Nodo crearNodo(String payload, Nodo left, Nodo right){
         return new Nodo(payload, left, right);
     }
+    public static Nodo crearNodoDummy(Nodo left, Nodo right){
+        return new Nodo("dummy", left, right);
+    }
     public String getPayload(){
         return this.payload;
     }
@@ -30,5 +33,9 @@ public class Nodo {
     }
     public Nodo getRight(){
         return this.right;
+    }
+    @Override
+    public String toString(){
+        return this.payload;
     }
 }
