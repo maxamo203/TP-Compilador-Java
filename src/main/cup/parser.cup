@@ -62,11 +62,7 @@ non terminal programa;
 non terminal bloquedeclaracion;
 non terminal root;
 non terminal listavariables;
-//non terminal listaFlotante;
-//non terminal listaCadena;
-//non terminal listaEnteros;
 non terminal listaIds;
-//non terminal variableIniciada;
 non terminal while;
 non terminal expresionTexto;
 
@@ -98,23 +94,6 @@ listaIds ::= IDENTIFIER:id {:System.out.println("Id: "+ id);new SymbolTableGener
 type ::= TYPE_STRING:tipo {:System.out.println("tipo: "+ "String");:};
 type ::= TYPE_FLOAT:tipo {:System.out.println("tipo: "+ "Float");:};
 type ::= TYPE_INTEGER:tipo {:System.out.println("tipo: "+ "Int");:};
-
-//bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE {: System.out.println("Bloque de variables sin variables");:};
-//bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE {: System.out.println("Bloque de variables con variables");:};
-//listavariables ::= listavariables variableIniciada;
-//listavariables ::= variableIniciada;
-//variableIniciada ::= listaEnteros COLON TYPE_INTEGER {: System.out.println("Entero");:};
-//variableIniciada ::= listaCadena COLON TYPE_STRING {: System.out.println("Cadena");:};
-//variableIniciada ::= listaFlotante COLON TYPE_FLOAT {: System.out.println("Flotante"); :};
-
-//listaEnteros ::= listaEnteros COMMA IDENTIFIER:id {: System.out.println("Variable Entera: " + id ); new SymbolTableGenerator().addSymbol(id.toString(),Symbol.INTEGER,"-",0);:};
-//listaEnteros ::= IDENTIFIER:id  {: System.out.println("Variable Entera: " + id); new SymbolTableGenerator().addSymbol(id.toString(),Symbol.INTEGER,"-",0);:};
-
-//listaFlotante ::= listaFlotante COMMA IDENTIFIER:id {: System.out.println("Variable Flotante: " + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.FLOAT,"-",0); :};
-//listaFlotante ::= IDENTIFIER:id  {: System.out.println("Variable Flotante: " + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.FLOAT,"-",0); :};
-
-//listaCadena ::= listaCadena COMMA IDENTIFIER:id {: System.out.println("Cadena:" + id );new SymbolTableGenerator().addSymbol(id.toString(),Symbol.STRING,"-",0); :};
-//listaCadena ::= IDENTIFIER:id  {: System.out.println("Cadena:" + id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.STRING,"-",0); :};
 
 
 programa ::= programa sentence {:System.out.println("Instruccion mas algo");:};
