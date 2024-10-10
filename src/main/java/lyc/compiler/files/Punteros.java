@@ -5,7 +5,11 @@ import java.util.Stack;
 public class Punteros {
     private static Stack<Nodo> nodoStack = new Stack<>();
 
-    public static Nodo p_start;
+    public static Nodo p_root;
+    public static Nodo p_programa;
+    public static Nodo p_lista_sentencias;
+    public static Nodo p_sentencia;
+    public static Nodo p_asignacion;
     public static Nodo p_expresion;
     public static Nodo p_term;
     public static Nodo p_factor;

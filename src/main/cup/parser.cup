@@ -91,7 +91,8 @@ root ::= bloquedeclaracion
     {: System.out.println("Fin solo variables");:};
 
 root ::= programa 
-    {:System.out.println("Fin sin variables");:};
+    {:System.out.println("Fin sin variables");
+    Punteros.p_root = Punteros.p_programa; :};
 
 bloquedeclaracion ::= INIT OPEN_LLAVE listavariables CLOSE_LLAVE 
     {: System.out.println("Bloque de variables con variables");:};
@@ -118,13 +119,16 @@ type ::= TYPE_INTEGER:tipo
 
 
 programa ::= programa sentence 
-    {:System.out.println("Instruccion mas algo");:};
+    {:System.out.println("Instruccion mas algo");
+    Punteros.p_programa = Nodo.crearNodoDummy(Punteros.p_programa, Punteros.p_sentencia);:};
 
 programa ::= sentence 
-    {:System.out.println("Instruccion");:};
+    {:System.out.println("Instruccion");
+    Punteros.p_programa = Punteros.p_sentencia;:};
 
 sentence ::= assignment 
-    {: System.out.println("asigno valores"); :};
+    {: System.out.println("asigno valores");
+    Punteros.p_sentencia = Punteros.p_asignacion; :};
 
 sentence ::= selection 
     {:System.out.println("if");:};
@@ -134,16 +138,19 @@ sentence ::= while
 
 sentence ::= read | write;
 assignment ::= IDENTIFIER:id ASSIG expression 
-    {: System.out.println("Assignment: " + id ); :};
+    {: System.out.println("Assignment: " + id );
+    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
 
 assignment ::= IDENTIFIER ASSIG expresionTexto 
     {: System.out.println("Text Assignment"); :};
 
-assignment ::= IDENTIFIER ASSIG triangulo 
-    {: System.out.println("triangulo Assignment"); :};
+assignment ::= IDENTIFIER:id ASSIG triangulo 
+    {: System.out.println("triangulo Assignment");
+    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_triangulo ); :};
 
-assignment ::= IDENTIFIER ASSIG getPenultimatePosition 
-    {: System.out.println("GetPenultimatePosition Assignment"); :};
+assignment ::= IDENTIFIER:id ASSIG getPenultimatePosition 
+    {: System.out.println("GetPenultimatePosition Assignment");
+    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_getPenultimatePosition ); :};
 
 expression ::= expression PLUS term 
     {: System.out.println("+ suma");
