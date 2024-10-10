@@ -25,6 +25,14 @@ public class Nodo {
     public static Nodo crearNodoDummy(Nodo left, Nodo right){
         return new Nodo("dummy", left, right);
     }
+    public static Nodo agregarHijos(Nodo padre, Nodo hijoI, Nodo hijoD){
+        if(padre.left != null || padre.right != null){
+            throw new RuntimeException("Error: Nodo ya tiene hijos");
+        }
+        padre.left = hijoI;
+        padre.right = hijoD;
+        return padre;
+    }
     public String getPayload(){
         return this.payload;
     }

@@ -69,7 +69,12 @@ non terminal while;
 non terminal expresionTexto;
 
 non terminal selection;
+non terminal ifsimple;
+non terminal ifelse;
 non terminal condition;
+non terminal condition_simple;
+non terminal condition_double;
+non terminal condition_negated;
 non terminal comparation;
 non terminal logic_operator;
 non terminal read;
@@ -85,10 +90,12 @@ non terminal list;
 start with root;
 
 root ::= bloquedeclaracion programa 
-    {: System.out.println("Fin con variables");:};
+    {: System.out.println("Fin con variables");
+    Punteros.p_root = Punteros.p_programa;:};
 
 root ::= bloquedeclaracion 
-    {: System.out.println("Fin solo variables");:};
+    {: System.out.println("Fin solo variables");
+    Punteros.p_root = null;:};
 
 root ::= programa 
     {:System.out.println("Fin sin variables");
@@ -131,12 +138,19 @@ sentence ::= assignment
     Punteros.p_sentencia = Punteros.p_asignacion; :};
 
 sentence ::= selection 
-    {:System.out.println("if");:};
+    {:System.out.println("if");
+    Punteros.p_sentencia = Punteros.p_seleccion;:};
 
 sentence ::= while 
     {:System.out.println("un while");:};
 
-sentence ::= read | write;
+sentence ::= read 
+    {:System.out.println("read");
+    Punteros.p_sentencia = Punteros.p_read;:};
+sentence ::= write
+    {:System.out.println("write");
+    Punteros.p_sentencia = Punteros.p_write;:};
+
 assignment ::= IDENTIFIER:id ASSIG expression 
     {: System.out.println("Assignment: " + id );
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
@@ -196,28 +210,48 @@ factor ::= OPEN_BRACKET expression CLOSE_BRACKET
     {: System.out.println("Factor = (Expression)"); :};
 
 expresionTexto ::= STRING_CONSTANT:cte 
-    {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);:};
+    {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);
+    Punteros.p_expresion_texto = Nodo.crearHijo(cte+"");:};
 
 
-selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE ELSE OPEN_LLAVE  programa CLOSE_LLAVE 
-    {: System.out.println( "Seleccion con else" ); :};
 
-selection ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
-    {: System.out.println( "Seleccion sin else" ); :};
+selection ::= ifsimple 
+    {:System.out.println("if simple");:};
+selection ::= ifelse 
+    {:System.out.println("if else");:};
+ifsimple ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE {:Punteros.Apilar(Punteros.p_programa); :} programa CLOSE_LLAVE 
+    {:  Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion, Punteros.p_programa);
+    Punteros.p_programa = Punteros.Desapilar(); :};
+
+
+
+
+
+ifelse ::= ifsimple ELSE {:Punteros.Apilar(Punteros.p_programa); :} OPEN_LLAVE  programa CLOSE_LLAVE 
+    {: Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion,Nodo.crearNodo("ELSE",Punteros.Desapilar(),Punteros.p_programa));:};
+
 
 
 while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
     {: System.out.println( "while" ); :};
 
+condition ::= condition_simple 
+    {: System.out.println( "condicion simple" ); :};
+condition ::= condition_double 
+    {: System.out.println( "condicion doble" ); :};
+condition ::= condition_negated 
+    {: System.out.println( "condicion negada" ); :};
 
-condition ::= expression comparation expression 
-    {: System.out.println( "comparacion simple" ); :};
+condition_simple ::= expression {:Punteros.Apilar(Punteros.p_expresion);:} comparation expression 
+    {: System.out.println( "comparacion simple" ); 
+    Punteros.p_condicion = Nodo.agregarHijos(Punteros.Desapilar(),Punteros.Desapilar(),Punteros.p_expresion);:}; //primero apilo la expresion y luego la comparacion //TODO: Ver si hay que cambiar el orden
 
-condition ::= expression comparation expression logic_operator expression comparation expression 
+condition_double ::= condition_simple logic_operator condition_simple
     {: System.out.println( "comparacion doble" ); :};
 
-condition ::= NOT expression comparation expression 
-    {: System.out.println( "comparacion negada" ); :};
+condition_negated ::= NOT condition_simple 
+    {: System.out.println( "comparacion negada" );
+     :};
 
 logic_operator ::= AND 
     {: System.out.println( "and" ); :};
@@ -226,29 +260,39 @@ logic_operator ::= OR
     {: System.out.println( "or" ); :};
 
 comparation ::= LESS 
-    {: System.out.println( "<" ); :};
+    {: System.out.println( "<" );
+    Punteros.Apilar(Nodo.crearHijo("<")); :};
 
 comparation ::= LESSOREQUAL 
-    {: System.out.println( "<=" ); :};
+    {: System.out.println( "<=" );
+    Punteros.Apilar(Nodo.crearHijo("<=")); :};
 
 comparation ::= EQUAL 
-    {: System.out.println( "==" ); :};
+    {: System.out.println( "==" );
+    Punteros.Apilar(Nodo.crearHijo("==")); :};
 
 comparation ::= GREATER 
-    {: System.out.println( ">" ); :};
+    {: System.out.println( ">" );
+    Punteros.Apilar(Nodo.crearHijo(">")); :};
 
 comparation ::= GREATEROREQUAL 
-    {: System.out.println( ">=" ); :};
+    {: System.out.println( ">=" );
+    Punteros.Apilar(Nodo.crearHijo(">=")); :};
 
 
-read ::= LEER OPEN_BRACKET IDENTIFIER CLOSE_BRACKET 
-    {: System.out.println("Lectura");:};
+
+
+read ::= LEER OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET 
+    {: System.out.println("Lectura");
+    Punteros.p_read = Nodo.crearNodo("READ", Nodo.crearHijo(id+""), null);:};
 
 write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET 
-    {: System.out.println("Escritura de numeros");:};
+    {: System.out.println("Escritura de numeros");
+    Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion, null);:};
 
 write ::= ESCRIBIR OPEN_BRACKET expresionTexto CLOSE_BRACKET 
-    {: System.out.println("Escritura de texto");:};
+    {: System.out.println("Escritura de texto");
+    Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion_texto, null);:};
 
 
 triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.crearNodo("=",Nodo.crearHijo("@tri1"), Punteros.p_expresion);:} 
