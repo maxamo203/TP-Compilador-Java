@@ -31,6 +31,6 @@ public class IntermediateCodeGenerator implements FileGenerator {
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
         fileWriter.write("TODO");
-        Graphviz.fromGraph(graficarNodo(Punteros.p_triangulo)).width(7000).render(Format.PNG).toFile(new java.io.File("target/output/intermediate-code.png"));
+        Graphviz.fromGraph(graficarNodo(Punteros.p_getPenultimatePosition)).width(7000).render(Format.PNG).toFile(new java.io.File("target/output/intermediate-code.png"));
     }
 }

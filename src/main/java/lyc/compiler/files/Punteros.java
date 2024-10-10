@@ -10,6 +10,7 @@ public class Punteros {
     public static Nodo p_term;
     public static Nodo p_factor;
     public static Nodo p_triangulo;
+    public static Nodo p_getPenultimatePosition;
 
     public static void Apilar(Nodo n){
         nodoStack.push(n);

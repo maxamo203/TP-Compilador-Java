@@ -293,14 +293,25 @@ list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE
 
 
 list_elements ::= list_elements COMMA expression 
-    {: System.out.println("list_elements");:};
+    {: System.out.println("list_elements");
+    Punteros.Apilar(Punteros.p_expresion);:};
 
 list_elements  ::= expression 
-    {: System.out.println("list_elements con expr");:};
+    {: System.out.println("list_elements con expr");
+    Punteros.Apilar(Punteros.p_expresion);:};
 
 
-getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET list CLOSE_BRACKET 
-    {: System.out.println("getPenultimatePosition  ");:};
+getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET {:Punteros.Apilar(Nodo.crearHijo("@PENULTIMATE"));:} list CLOSE_BRACKET 
+    {: System.out.println("getPenultimatePosition  ");
+    Punteros.Desapilar();
+    Nodo nodoUtil = Punteros.Desapilar();
+    if(nodoUtil.getPayload().equals("@PENULTIMATE")){//No hay penultimo
+        Punteros.p_getPenultimatePosition = Nodo.crearHijo("0");
+    }else{
+        Punteros.p_getPenultimatePosition = nodoUtil;
+        while(!Punteros.Desapilar().getPayload().equals("@PENULTIMATE")){} //Limpia la pila a como estaba antes
+    }
+    :};
 
 
 //EN CASO DE QUILOMBO, SACAR LAS DOS LINEAS DE ABAJO 👍
