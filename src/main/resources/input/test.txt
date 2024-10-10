@@ -1,6 +1,6 @@
 *-triangulo1 := triangulo(y/2 + 3, 1+1, x-1)-*
 *-penul := getPenultimatePosition([2, 3+3])-*
-prueba := 3+3+3+3*2
+prueba := -((1 + (2*(3))/-(4+2)))
 
 mientras (a<b){
     mientras (NOT 2==3+4){

@@ -192,8 +192,9 @@ term ::= factor
     Punteros.p_term = Punteros.p_factor;:};
 
 
-factor ::= SUB factor 
-    {: System.out.println("- unario"); :};
+factor ::= SUB factor
+    {: System.out.println("- unario");
+    Punteros.p_factor = Nodo.crearNodo("-", Nodo.crearHijo("0"),Punteros.p_factor);:};
 
 factor ::= IDENTIFIER:id  
     {: System.out.println("Id: " + id);
@@ -207,8 +208,9 @@ factor ::= FLOAT_CONSTANT:constant
     {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.FLOAT,constant.toString(),0);
         Punteros.p_factor = Nodo.crearHijo(constant+""); :};
 
-factor ::= OPEN_BRACKET expression CLOSE_BRACKET 
-    {: System.out.println("Factor = (Expression)"); :};
+factor ::= OPEN_BRACKET {:Punteros.Apilar(Punteros.p_term);Punteros.Apilar(Punteros.p_expresion);:} expression CLOSE_BRACKET 
+    {: System.out.println("Factor = (Expression)");
+    Punteros.p_factor = Punteros.p_expresion; Punteros.p_expresion = Punteros.Desapilar(); Punteros.p_term = Punteros.Desapilar(); :};
 
 expresionTexto ::= STRING_CONSTANT:cte 
     {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);
