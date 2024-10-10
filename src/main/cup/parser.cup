@@ -142,7 +142,8 @@ sentence ::= selection
     Punteros.p_sentencia = Punteros.p_seleccion;:};
 
 sentence ::= while 
-    {:System.out.println("un while");:};
+    {:System.out.println("un while");
+    Punteros.p_sentencia = Punteros.p_while;:};
 
 sentence ::= read 
     {:System.out.println("read");
@@ -216,24 +217,26 @@ expresionTexto ::= STRING_CONSTANT:cte
 
 
 selection ::= ifsimple 
-    {:System.out.println("if simple");:};
+    {:System.out.println("if simple");
+    Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.Desapilar(), Punteros.p_cuerpoIf);:};
 selection ::= ifelse 
-    {:System.out.println("if else");:};
-ifsimple ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE {:Punteros.Apilar(Punteros.p_programa); :} programa CLOSE_LLAVE 
-    {:  Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion, Punteros.p_programa);
+    {:System.out.println("if else");
+    Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion,Nodo.crearNodo("ELSE",Punteros.Desapilar(),Punteros.p_programa));:};
+
+ifsimple ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE {:Punteros.Apilar(Punteros.p_condicion);Punteros.Apilar(Punteros.p_programa); :} programa CLOSE_LLAVE 
+    {:  Punteros.p_cuerpoIf = Punteros.p_programa;
     Punteros.p_programa = Punteros.Desapilar(); :};
 
 
+ifelse ::= ifsimple ELSE {:Punteros.Apilar(Punteros.p_programa);Punteros.Apilar(Punteros.p_cuerpoIf); :} OPEN_LLAVE  programa CLOSE_LLAVE 
+    {: Punteros.p_cuerpoElse = Punteros.p_programa;:};
 
 
 
-ifelse ::= ifsimple ELSE {:Punteros.Apilar(Punteros.p_programa); :} OPEN_LLAVE  programa CLOSE_LLAVE 
-    {: Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion,Nodo.crearNodo("ELSE",Punteros.Desapilar(),Punteros.p_programa));:};
-
-
-
-while ::= WHILE OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
-    {: System.out.println( "while" ); :};
+while ::= WHILE OPEN_BRACKET condition {:Punteros.Apilar(Punteros.p_programa);Punteros.Apilar(Punteros.p_condicion);:} CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
+    {: System.out.println( "while" );
+    Punteros.p_while = Nodo.crearNodo("WHILE", Punteros.Desapilar(), Punteros.p_programa);
+    Punteros.p_programa = Punteros.Desapilar(); :};
 
 condition ::= condition_simple 
     {: System.out.println( "condicion simple" ); :};
@@ -246,18 +249,21 @@ condition_simple ::= expression {:Punteros.Apilar(Punteros.p_expresion);:} compa
     {: System.out.println( "comparacion simple" ); 
     Punteros.p_condicion = Nodo.agregarHijos(Punteros.Desapilar(),Punteros.Desapilar(),Punteros.p_expresion);:}; //primero apilo la expresion y luego la comparacion //TODO: Ver si hay que cambiar el orden
 
-condition_double ::= condition_simple logic_operator condition_simple
-    {: System.out.println( "comparacion doble" ); :};
+condition_double ::= condition_simple {:Punteros.Apilar(Punteros.p_condicion);:} logic_operator condition_simple
+    {: System.out.println( "comparacion doble" ); 
+    Punteros.p_condicion = Nodo.agregarHijos(Punteros.Desapilar(), Punteros.Desapilar(), Punteros.p_condicion);:};
 
 condition_negated ::= NOT condition_simple 
     {: System.out.println( "comparacion negada" );
-     :};
+     Punteros.p_condicion = Nodo.crearNodo("NOT", Punteros.p_condicion, null);:};
 
 logic_operator ::= AND 
-    {: System.out.println( "and" ); :};
+    {: System.out.println( "and" );
+    Punteros.Apilar(Nodo.crearHijo("AND")); :};
 
 logic_operator ::= OR 
-    {: System.out.println( "or" ); :};
+    {: System.out.println( "or" );
+    Punteros.Apilar(Nodo.crearHijo("OR")); :};
 
 comparation ::= LESS 
     {: System.out.println( "<" );

@@ -12,6 +12,8 @@ public class Punteros {
     public static Nodo p_seleccion;
     public static Nodo p_while;
     public static Nodo p_condicion;
+    public static Nodo p_cuerpoIf;
+    public static Nodo p_cuerpoElse;
     public static Nodo p_asignacion;
     public static Nodo p_expresion;
     public static Nodo p_expresion_texto;
