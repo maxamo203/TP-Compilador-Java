@@ -287,6 +287,7 @@ triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.cr
 //         }
 //     }
 // }
+//Punteros.p_triangulo = Nodo.crearNodoDummy(Punteros.p_triangulo,Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri2")),Nodo.crearNodo("ELSE",Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3")),Nodo.crearNodo("ELSE",Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_equilatero")),Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles")))),Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3")),Nodo.crearNodo("ELSE",Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles")),Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri3")),Nodo.crearNodo("ELSE",Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles")),Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_escaleno")))))))));
 list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE 
     {: System.out.println("list");:};
 
