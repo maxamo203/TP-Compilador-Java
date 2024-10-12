@@ -35,9 +35,7 @@ terminal END_WHILE;
 terminal INIT;
 terminal IDENTIFIER;
 terminal COLON;
-terminal SEMICOLON;
 terminal COMMA;
-terminal PUNTOYCOMA;
 terminal OPEN_CORCHETE;
 terminal CLOSE_CORCHETE;
 terminal OPEN_LLAVE;
@@ -218,20 +216,24 @@ expresionTexto ::= STRING_CONSTANT:cte
 
 
 
-selection ::= ifsimple 
+
+
+selection ::= ifsimple
     {:System.out.println("if simple");
     Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.Desapilar(), Punteros.p_cuerpoIf);:};
 selection ::= ifelse 
     {:System.out.println("if else");
-    Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion,Nodo.crearNodo("ELSE",Punteros.Desapilar(),Punteros.p_programa));:};
+    Punteros.p_cuerpoIf = Punteros.Desapilar();
+    Punteros.p_condicion = Punteros.Desapilar();
+    Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.p_condicion,Nodo.crearNodo("ELSE",Punteros.p_cuerpoIf ,Punteros.p_cuerpoElse));:};
 
 ifsimple ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE {:Punteros.Apilar(Punteros.p_condicion);Punteros.Apilar(Punteros.p_programa); :} programa CLOSE_LLAVE 
     {:  Punteros.p_cuerpoIf = Punteros.p_programa;
     Punteros.p_programa = Punteros.Desapilar(); :};
 
-
-ifelse ::= ifsimple ELSE {:Punteros.Apilar(Punteros.p_programa);Punteros.Apilar(Punteros.p_cuerpoIf); :} OPEN_LLAVE  programa CLOSE_LLAVE 
-    {: Punteros.p_cuerpoElse = Punteros.p_programa;:};
+ifelse ::= ifsimple ELSE {:Punteros.Apilar(Punteros.p_cuerpoIf);Punteros.Apilar(Punteros.p_programa); :} OPEN_LLAVE  programa CLOSE_LLAVE 
+    {: Punteros.p_cuerpoElse = Punteros.p_programa;
+    Punteros.p_programa = Punteros.Desapilar(); :};
 
 
 
@@ -347,6 +349,7 @@ triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.cr
 //     }
 // }
 //Punteros.p_triangulo = Nodo.crearNodoDummy(Punteros.p_triangulo,Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri2")),Nodo.crearNodo("ELSE",Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3")),Nodo.crearNodo("ELSE",Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_equilatero")),Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles")))),Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3")),Nodo.crearNodo("ELSE",Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles")),Nodo.crearNodo("IF",Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri3")),Nodo.crearNodo("ELSE",Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_isoceles")),Nodo.crearNodo("=",Nodo.crearHijo("@triangulo"),Nodo.crearHijo("_escaleno")))))))));
+
 list ::= OPEN_CORCHETE list_elements CLOSE_CORCHETE 
     {: System.out.println("list");:};
 
@@ -361,7 +364,7 @@ list_elements  ::= expression
 
 
 getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET {:Punteros.Apilar(Nodo.crearHijo("@PENULTIMATE"));:} list CLOSE_BRACKET 
-    {: System.out.println("getPenultimatePosition  ");
+    {: System.out.println("getPenultimatePosition");
     Punteros.Desapilar();
     Nodo nodoUtil = Punteros.Desapilar();
     if(nodoUtil.getPayload().equals("@PENULTIMATE")){//No hay penultimo

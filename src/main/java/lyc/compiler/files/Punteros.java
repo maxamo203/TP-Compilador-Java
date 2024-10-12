@@ -1,5 +1,4 @@
 package lyc.compiler.files;
-import java_cup.runtime.Symbol;
 import java.util.Stack;
 
 public class Punteros {

@@ -42,7 +42,6 @@ Colon = ":"
 OpenBracket = "("
 CloseBracket = ")"
 Coma = ","
-PuntoyComa = ";"
 OpenCorchete = "["
 CloseCorchete = "]"
 OpenLlave = "{"
@@ -95,7 +94,6 @@ Comment = {StartComment}(.)*?{EndComment}
 
   {Init}                                  {return symbol(ParserSym.INIT);}
   {Coma}                                    { return symbol(ParserSym.COMMA); }
-  {PuntoyComa}                              { return symbol(ParserSym.PUNTOYCOMA); }
   {OpenCorchete}                            { return symbol(ParserSym.OPEN_CORCHETE); }
   {CloseCorchete}                           { return symbol(ParserSym.CLOSE_CORCHETE); }
   {OpenLlave}                               { return symbol(ParserSym.OPEN_LLAVE); }

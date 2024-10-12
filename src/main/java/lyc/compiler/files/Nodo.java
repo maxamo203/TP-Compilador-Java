@@ -1,5 +1,4 @@
 package lyc.compiler.files;
-import java_cup.runtime.Symbol;
 
 public class Nodo {
     private String payload;

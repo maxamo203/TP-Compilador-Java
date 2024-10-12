@@ -1,6 +1,31 @@
 *-triangulo1 := triangulo(y/2 + 3, 1+1, x-1)-*
-*-penul := getPenultimatePosition([2, 3+3])-*
+penul := getPenultimatePosition([2, 3+3])
 prueba := -((1 + (2*(3))/-(4+2)))
+
+si (a<b){
+    si(b>a){
+        leer(a)
+    }sino{
+        leer(b)
+    }
+}sino{
+    si(c<d){
+        leer(c)
+    }sino{
+        leer(d)
+        mientras (a<b){
+            mientras (NOT 2==3+4){
+                a:=5
+                mientras(2==2 OR a<= b){
+                    leer(d)
+                }
+            }
+    escribir(23)
+}
+
+    }
+}
+
 
 mientras (a<b){
     mientras (NOT 2==3+4){
