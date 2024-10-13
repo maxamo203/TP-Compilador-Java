@@ -154,12 +154,13 @@ assignment ::= IDENTIFIER:id ASSIG expression
     {: System.out.println("Assignment: " + id );
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
 
-assignment ::= IDENTIFIER ASSIG expresionTexto 
-    {: System.out.println("Text Assignment"); :};
+assignment ::= IDENTIFIER:id ASSIG expresionTexto 
+    {: System.out.println("Text Assignment");
+     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion_texto);:};
 
 assignment ::= IDENTIFIER:id ASSIG triangulo 
     {: System.out.println("triangulo Assignment");
-    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_triangulo ); :};
+    Punteros.p_asignacion = Nodo.crearNodoDummy(Punteros.p_triangulo,Nodo.crearNodo("=", Nodo.crearHijo(id+""), Nodo.crearHijo("@triangulo"))); :};
 
 assignment ::= IDENTIFIER:id ASSIG getPenultimatePosition 
     {: System.out.println("GetPenultimatePosition Assignment");
@@ -377,9 +378,12 @@ getPenultimatePosition ::= GETPENULTIMATEPOSITION OPEN_BRACKET {:Punteros.Apilar
 
 
 //EN CASO DE QUILOMBO, SACAR LAS DOS LINEAS DE ABAJO 👍
-selection ::= START_IF condition END_IF OPEN_LLAVE programa CLOSE_LLAVE 
-    {: System.out.println( "Seleccion sin else ¿?" ); :};
+selection ::= START_IF condition END_IF OPEN_LLAVE {:Punteros.Apilar(Punteros.p_condicion);Punteros.Apilar(Punteros.p_programa); :} programa CLOSE_LLAVE 
+    {: System.out.println( "Seleccion sin else ¿?" );
+    Punteros.p_cuerpoIf = Punteros.p_programa;
+    Punteros.p_programa = Punteros.Desapilar();  :};
 
-while ::= START_WHILE condition END_WHILE OPEN_LLAVE programa CLOSE_LLAVE 
-    {: System.out.println( "while ¿¿??" ); :};
+while ::= START_WHILE condition {:Punteros.Apilar(Punteros.p_programa);Punteros.Apilar(Punteros.p_condicion);:}END_WHILE OPEN_LLAVE programa CLOSE_LLAVE 
+    {: System.out.println( "while ¿¿??" );Punteros.p_while = Nodo.crearNodo("WHILE", Punteros.Desapilar(), Punteros.p_programa);
+    Punteros.p_programa = Punteros.Desapilar(); :};
 
