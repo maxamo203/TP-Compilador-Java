@@ -1,6 +1,7 @@
 package lyc.compiler.files;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Stack;
 import java.io.FileWriter;
 import java.io.IOException;
 //import lyc.compiler.files.Symbol;
@@ -9,6 +10,7 @@ import java.io.IOException;
 public class SymbolTableGenerator implements FileGenerator{
 
     private static Map<String, Symbol> symbolTable = new HashMap<>();
+    private static Stack<String> idStack = new Stack<>();
     public static int pruba = 4;
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
@@ -33,5 +35,14 @@ public class SymbolTableGenerator implements FileGenerator{
     // }
     public static Symbol getSymbol(String name){
         return symbolTable.get(name);
+    }
+    public static void pushId(String id){
+        idStack.push(id);
+    }
+    public static String popId(){
+        return idStack.pop();
+    }
+    public static boolean idStackIsEmpty(){
+        return idStack.isEmpty();
     }
 }
