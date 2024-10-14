@@ -108,19 +108,22 @@ bloquedeclaracion ::= INIT OPEN_LLAVE CLOSE_LLAVE
 listavariables ::= listavariables listaIds COLON type;
 listavariables ::= listaIds COLON type;
 listaIds ::= listaIds COMMA IDENTIFIER:id 
-    {:System.out.println("Id: "+ id + "|y algo mas");new SymbolTableGenerator().addSymbol(id.toString(),Symbol.UNKNOWN,"-",0);:};
+    {:System.out.println("Id: "+ id + "|y algo mas");SymbolTableGenerator.pushId(id+"");:};
 
 listaIds ::= IDENTIFIER:id 
-    {:System.out.println("Id: "+ id);new SymbolTableGenerator().addSymbol(id.toString(),Symbol.UNKNOWN,"-",0);:};
+    {:System.out.println("Id: "+ id); SymbolTableGenerator.pushId(id+"");:};
 
 type ::= TYPE_STRING:tipo 
-    {:System.out.println("tipo: "+ "String");:};
+    {:System.out.println("tipo: "+ "String");
+    while(!SymbolTableGenerator.idStackIsEmpty()) {new SymbolTableGenerator().addSymbol(SymbolTableGenerator.popId(),Symbol.STRING,"-",0);}:};
 
 type ::= TYPE_FLOAT:tipo 
-    {:System.out.println("tipo: "+ "Float");:};
+    {:System.out.println("tipo: "+ "Float");
+    while(!SymbolTableGenerator.idStackIsEmpty()) {new SymbolTableGenerator().addSymbol(SymbolTableGenerator.popId(),Symbol.FLOAT,"-",0);}:};
 
 type ::= TYPE_INTEGER:tipo 
-    {:System.out.println("tipo: "+ "Int");:};
+    {:System.out.println("tipo: "+ "Int");
+    while(!SymbolTableGenerator.idStackIsEmpty()) {new SymbolTableGenerator().addSymbol(SymbolTableGenerator.popId(),Symbol.INTEGER,"-",0);}:};
 
 
 programa ::= programa sentence 
@@ -200,7 +203,7 @@ factor ::= IDENTIFIER:id
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
-    {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,"-",0);
+    {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,""+constant,0);
     Punteros.p_factor = Nodo.crearHijo(constant+""); :};
 
 factor ::= FLOAT_CONSTANT:constant 
