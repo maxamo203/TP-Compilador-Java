@@ -5,6 +5,7 @@ import lyc.compiler.files.SymbolTableGenerator;
 import lyc.compiler.files.Symbol;
 import lyc.compiler.files.Nodo;
 import lyc.compiler.files.Punteros;
+import lyc.compiler.model.*;
 class Parser;
 
 
@@ -119,7 +120,7 @@ type ::= TYPE_STRING:tipo
         while(!SymbolTableGenerator.idStackIsEmpty()) {
             String id = SymbolTableGenerator.popId();
         if ((new SymbolTableGenerator().addSymbol(id,Symbol.STRING,"-",0)) == -1){
-            throw new Exception("La variable " + id + " ya fue declarada.");
+            throw new SemanticException("La variable <<" + id + ">> ya fue declarada.");
                 } 
         }:};
 
@@ -129,7 +130,7 @@ type ::= TYPE_FLOAT:tipo
         while(!SymbolTableGenerator.idStackIsEmpty()) {
             String id = SymbolTableGenerator.popId();
         if ((new SymbolTableGenerator().addSymbol(id,Symbol.FLOAT,"-",0)) == -1){
-            throw new Exception("La variable " + id + " ya fue declarada.");
+            throw new SemanticException("La variable <<" + id + ">> ya fue declarada.");
                 } 
         }:};
 
@@ -139,7 +140,7 @@ type ::= TYPE_INTEGER:tipo
             while(!SymbolTableGenerator.idStackIsEmpty()) {
             String id = SymbolTableGenerator.popId();
         if ((new SymbolTableGenerator().addSymbol(id,Symbol.INTEGER,"-",0)) == -1){
-            throw new Exception("La variable " + id + " ya fue declarada.");
+            throw new SemanticException("La variable <<" + id + ">> ya fue declarada.");
                 } 
         }:};
 
@@ -174,10 +175,10 @@ assignment ::= IDENTIFIER:id ASSIG expression
     {: System.out.println("Assignment: " + id );
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
     if(symbolId == null){
-        throw new Exception("No existe una variable definida como: " + id);
+        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
     }
     if(symbolId.getTipoDato() == Symbol.STRING){
-        throw new Exception("Se intento asignar a la variable STRING " + id + " un valor numerico");
+        throw new SemanticException("Se intento asignar a la variable STRING <<" + id + ">> un valor numerico");
     }
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
 
@@ -185,21 +186,37 @@ assignment ::= IDENTIFIER:id ASSIG expresionTexto
     {: System.out.println("Text Assignment");
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
     if(symbolId == null){
-        throw new Exception("No existe una variable definida como: " + id);
+        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
     }
     if(symbolId.getTipoDato() == Symbol.INTEGER){
-        throw new Exception("Se intento asignar a la variable INTEGER " + id + " una cadena");
+        throw new SemanticException("Se intento asignar a la variable INTEGER <<" + id + ">> una cadena");
     }else if(symbolId.getTipoDato()  == Symbol.FLOAT){
-        throw new Exception("Se intento asignar a la variable FLOAT " + id + " una cadena");
+        throw new SemanticException("Se intento asignar a la variable FLOAT <<" + id + ">> una cadena");
     }
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion_texto);:};
 
 assignment ::= IDENTIFIER:id ASSIG triangulo 
     {: System.out.println("triangulo Assignment");
+    Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    if(symbolId == null){
+        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
+    }
+    if(symbolId.getTipoDato() == Symbol.INTEGER){
+        throw new SemanticException("Se intento asignar a la variable INTEGER <<" + id + ">> una cadena");
+    }else if(symbolId.getTipoDato()  == Symbol.FLOAT){
+        throw new SemanticException("Se intento asignar a la variable FLOAT <<" + id + ">> una cadena");
+    }
     Punteros.p_asignacion = Nodo.crearNodoDummy(Punteros.p_triangulo,Nodo.crearNodo("=", Nodo.crearHijo(id+""), Nodo.crearHijo("@triangulo"))); :};
 
 assignment ::= IDENTIFIER:id ASSIG getPenultimatePosition 
     {: System.out.println("GetPenultimatePosition Assignment");
+    Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    if(symbolId == null){
+        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
+    }
+    if(symbolId.getTipoDato() == Symbol.STRING){
+        throw new SemanticException("Se intento asignar a la variable STRING <<" + id + ">> un valor numerico");
+    }
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_getPenultimatePosition ); :};
 
 expression ::= expression PLUS term 
@@ -232,6 +249,10 @@ factor ::= SUB factor
 
 factor ::= IDENTIFIER:id  
     {: System.out.println("Id: " + id);
+    Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    if(symbolId == null){
+        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
+    }
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
@@ -321,6 +342,10 @@ comparation ::= GREATEROREQUAL
 
 read ::= LEER OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET 
     {: System.out.println("Lectura");
+    Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    if(symbolId == null){
+        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
+    }
     Punteros.p_read = Nodo.crearNodo("READ", Nodo.crearHijo(id+""), null);:};
 
 write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET 
