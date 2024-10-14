@@ -1,6 +1,5 @@
 *-inicializacion-*
 init{
-    f:Int
     a,b,c,d,e: Int
     x,z : Int
     f,g : Float
@@ -12,18 +11,18 @@ init{
 c := 3
 a := 1
 
-b := "tipo incorrecto"
+*-b := "tipo incorrecto"-*
 e := 22
 cadena1 := "Hola Mundo"
 *-cadena2 := "@unlam$!-*
 
-cadenaLargaJusta := "1234567890123456789012345678901234567890"
+*-cadenaLargaJusta := "1234567890123456789012345678901234567890" -*
 *-cadenaLarga := "12345678901234567890123456789012345678901"-* *-String muy largo-*
 
-idlargo89012345678901234567890 := 0
+*-idlargo89012345678901234567890 := 0-*
 *-idlargo890123456789012345678901 := 0-* *-Id muy largo-*
 
-enteroGrandeJusto := 65535
+*-enteroGrandeJusto := 65535 -*
 *-enteroGrande := 65536 -* *-Id muy grande-*
 
 x := 10 
@@ -102,4 +101,4 @@ mientras(a<b){
 
 *-operaciones-*
 c:=d*(e-21)/4
-asd := -d*(-e-21)/-4
+d := -d*(-e-21)/-4

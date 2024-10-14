@@ -114,17 +114,34 @@ listaIds ::= IDENTIFIER:id
     {:System.out.println("Id: "+ id); SymbolTableGenerator.pushId(id+"");:};
 
 type ::= TYPE_STRING:tipo 
-    {:System.out.println("tipo: "+ "String");
-    while(!SymbolTableGenerator.idStackIsEmpty()) {new SymbolTableGenerator().addSymbol(SymbolTableGenerator.popId(),Symbol.STRING,"-",0);}:};
+    {:
+        System.out.println("tipo: "+ "String");
+        while(!SymbolTableGenerator.idStackIsEmpty()) {
+            String id = SymbolTableGenerator.popId();
+        if ((new SymbolTableGenerator().addSymbol(id,Symbol.STRING,"-",0)) == -1){
+            throw new Exception("La variable " + id + " ya fue declarada.");
+                } 
+        }:};
 
 type ::= TYPE_FLOAT:tipo 
-    {:System.out.println("tipo: "+ "Float");
-    while(!SymbolTableGenerator.idStackIsEmpty()) {new SymbolTableGenerator().addSymbol(SymbolTableGenerator.popId(),Symbol.FLOAT,"-",0);}:};
+    {:
+        System.out.println("tipo: "+ "Float");
+        while(!SymbolTableGenerator.idStackIsEmpty()) {
+            String id = SymbolTableGenerator.popId();
+        if ((new SymbolTableGenerator().addSymbol(id,Symbol.FLOAT,"-",0)) == -1){
+            throw new Exception("La variable " + id + " ya fue declarada.");
+                } 
+        }:};
 
 type ::= TYPE_INTEGER:tipo 
-    {:System.out.println("tipo: "+ "Int");
-    while(!SymbolTableGenerator.idStackIsEmpty()) {new SymbolTableGenerator().addSymbol(SymbolTableGenerator.popId(),Symbol.INTEGER,"-",0);}:};
-
+    {:
+        System.out.println("tipo: "+ "Int");
+            while(!SymbolTableGenerator.idStackIsEmpty()) {
+            String id = SymbolTableGenerator.popId();
+        if ((new SymbolTableGenerator().addSymbol(id,Symbol.INTEGER,"-",0)) == -1){
+            throw new Exception("La variable " + id + " ya fue declarada.");
+                } 
+        }:};
 
 programa ::= programa sentence 
     {:System.out.println("Instruccion mas algo");
@@ -155,11 +172,23 @@ sentence ::= write
 
 assignment ::= IDENTIFIER:id ASSIG expression 
     {: System.out.println("Assignment: " + id );
+    if(new SymbolTableGenerator().getSymbol(id+"").getTipoDato() == Symbol.STRING){
+        throw new Exception("Se intento asignar a la variable STRING " + id + " un valor numerico");
+    }
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
 
 assignment ::= IDENTIFIER:id ASSIG expresionTexto 
     {: System.out.println("Text Assignment");
-     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion_texto);:};
+    Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    if(symbolId == null){
+        throw new Exception("No existe una variable definida como: " + id);
+    }
+    if(symbolId.getTipoDato() == Symbol.INTEGER){
+        throw new Exception("Se intento asignar a la variable INTEGER " + id + " una cadena");
+    }else if(symbolId.getTipoDato()  == Symbol.FLOAT){
+        throw new Exception("Se intento asignar a la variable FLOAT " + id + " una cadena");
+    }
+    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion_texto);:};
 
 assignment ::= IDENTIFIER:id ASSIG triangulo 
     {: System.out.println("triangulo Assignment");
@@ -193,7 +222,6 @@ term ::= factor
     {: System.out.println("Term = factor"); 
     Punteros.p_term = Punteros.p_factor;:};
 
-
 factor ::= SUB factor
     {: System.out.println("- unario");
     Punteros.p_factor = Nodo.crearNodo("-", Nodo.crearHijo("0"),Punteros.p_factor);:};
@@ -218,10 +246,6 @@ expresionTexto ::= STRING_CONSTANT:cte
     {:new SymbolTableGenerator().addSymbol("_" + cte.toString(),Symbol.STRING,cte.toString(),cte.toString().length()-2);
     Punteros.p_expresion_texto = Nodo.crearHijo(cte+"");:};
 
-
-
-
-
 selection ::= ifsimple
     {:System.out.println("if simple");
     Punteros.p_seleccion = Nodo.crearNodo("IF", Punteros.Desapilar(), Punteros.p_cuerpoIf);:};
@@ -238,8 +262,6 @@ ifsimple ::= IF OPEN_BRACKET condition CLOSE_BRACKET OPEN_LLAVE {:Punteros.Apila
 ifelse ::= ifsimple ELSE {:Punteros.Apilar(Punteros.p_cuerpoIf);Punteros.Apilar(Punteros.p_programa); :} OPEN_LLAVE  programa CLOSE_LLAVE 
     {: Punteros.p_cuerpoElse = Punteros.p_programa;
     Punteros.p_programa = Punteros.Desapilar(); :};
-
-
 
 while ::= WHILE OPEN_BRACKET condition {:Punteros.Apilar(Punteros.p_programa);Punteros.Apilar(Punteros.p_condicion);:} CLOSE_BRACKET OPEN_LLAVE programa CLOSE_LLAVE 
     {: System.out.println( "while" );
@@ -292,9 +314,6 @@ comparation ::= GREATER
 comparation ::= GREATEROREQUAL 
     {: System.out.println( ">=" );
     Punteros.Apilar(Nodo.crearHijo(">=")); :};
-
-
-
 
 read ::= LEER OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET 
     {: System.out.println("Lectura");
