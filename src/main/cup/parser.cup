@@ -172,7 +172,11 @@ sentence ::= write
 
 assignment ::= IDENTIFIER:id ASSIG expression 
     {: System.out.println("Assignment: " + id );
-    if(new SymbolTableGenerator().getSymbol(id+"").getTipoDato() == Symbol.STRING){
+    Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    if(symbolId == null){
+        throw new Exception("No existe una variable definida como: " + id);
+    }
+    if(symbolId.getTipoDato() == Symbol.STRING){
         throw new Exception("Se intento asignar a la variable STRING " + id + " un valor numerico");
     }
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
