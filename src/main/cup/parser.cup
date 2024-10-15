@@ -366,6 +366,10 @@ triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.cr
                 :}
             CLOSE_BRACKET  
             {: System.out.println("triangulo");
+            new SymbolTableGenerator().addSymbol("@tri1",Symbol.FLOAT,"-",0);
+            new SymbolTableGenerator().addSymbol("@tri2",Symbol.FLOAT,"-",0);
+            new SymbolTableGenerator().addSymbol("@tri3",Symbol.FLOAT,"-",0);
+            new SymbolTableGenerator().addSymbol("@triangulo",Symbol.STRING,"-",0);
             Nodo comp1 = Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri2"));
             Nodo comp2 = Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3"));
             Nodo comp3 = Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3"));
