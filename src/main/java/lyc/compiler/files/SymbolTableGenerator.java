@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.io.FileWriter;
 import java.io.IOException;
+import lyc.compiler.model.*;
 //import lyc.compiler.files.Symbol;
   
 
@@ -33,7 +34,10 @@ public class SymbolTableGenerator implements FileGenerator{
     // public static void addSymbol( Symbol symbol){
     //     symbolTable.put(symbol.getNombre(), symbol);
     // }
-    public static Symbol getSymbol(String name){
+    public static Symbol getSymbol(String name) throws SemanticException {
+        if(!symbolTable.containsKey(name)){
+            throw new SemanticException("No existe una variable definida como: <<" + name + ">>");
+        }
         return symbolTable.get(name);
     }
     public static void pushId(String id){

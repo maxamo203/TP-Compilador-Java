@@ -8,11 +8,6 @@ import lyc.compiler.files.Punteros;
 import lyc.compiler.model.*;
 class Parser;
 parser code {:
-  public static void validarIdExiste(String id) throws Exception {
-    if(new SymbolTableGenerator().getSymbol(id+"") == null){
-        throw new SemanticException("No existe una variable definida como: <<" + id + ">>");
-    }
-  }
   public static void validarTipoNumero(String id) throws Exception {
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
     if(symbolId.getTipoDato() == Symbol.STRING){
@@ -193,25 +188,21 @@ sentence ::= write
 
 assignment ::= IDENTIFIER:id ASSIG expression 
     {: System.out.println("Assignment: " + id );
-    validarIdExiste(id+"");
     validarTipoNumero(id+"");
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
 
 assignment ::= IDENTIFIER:id ASSIG expresionTexto 
     {: System.out.println("Text Assignment");
-    validarIdExiste(id+"");
     validarTipoTexto(id+"");
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion_texto);:};
 
 assignment ::= IDENTIFIER:id ASSIG triangulo 
     {: System.out.println("triangulo Assignment");
-    validarIdExiste(id+"");
     validarTipoTexto(id+"");
     Punteros.p_asignacion = Nodo.crearNodoDummy(Punteros.p_triangulo,Nodo.crearNodo("=", Nodo.crearHijo(id+""), Nodo.crearHijo("@triangulo"))); :};
 
 assignment ::= IDENTIFIER:id ASSIG getPenultimatePosition 
     {: System.out.println("GetPenultimatePosition Assignment");
-    validarIdExiste(id+"");
     validarTipoNumero(id+"");
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_getPenultimatePosition ); :};
 
@@ -245,7 +236,6 @@ factor ::= SUB factor
 
 factor ::= IDENTIFIER:id  
     {: System.out.println("Id: " + id);
-    validarIdExiste(id+"");
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
@@ -335,7 +325,6 @@ comparation ::= GREATEROREQUAL
 
 read ::= LEER OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET 
     {: System.out.println("Lectura");
-    validarIdExiste(id+"");
     Punteros.p_read = Nodo.crearNodo("READ", Nodo.crearHijo(id+""), null);:};
 
 write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET 
