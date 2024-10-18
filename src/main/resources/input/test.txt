@@ -77,7 +77,7 @@ mientras(a<b){
     mientras(2 <= 5 AND a==b){
         si(NOT c==b){
             leer(d)
-            escribir(String d)
+            escribir(d)
 
             escribir(String triangulo1)
             escribir(String triangulo2)
