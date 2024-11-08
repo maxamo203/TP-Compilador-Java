@@ -1,4 +1,4 @@
-PATH=C:\TASM;
+PATH=C:\Program Files (x86)\GUI Turbo Assembler\BIN;
 
 tasm numbers.asm
 tasm final.asm

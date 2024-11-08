@@ -40,6 +40,9 @@ public class SymbolTableGenerator implements FileGenerator{
         }
         return symbolTable.get(name);
     }
+    public static boolean containsSymbol(String name){
+        return symbolTable.containsKey(name);
+    }
     public static void pushId(String id){
         idStack.push(id);
     }
@@ -48,5 +51,8 @@ public class SymbolTableGenerator implements FileGenerator{
     }
     public static boolean idStackIsEmpty(){
         return idStack.isEmpty();
+    }
+    public static HashMap<String, Symbol> getSymbolTable(){
+        return (HashMap<String, Symbol>) symbolTable;
     }
 }
