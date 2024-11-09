@@ -41,6 +41,11 @@ public class Nodo {
     public Nodo getRight(){
         return this.right;
     }
+
+    public boolean isLeaf(){
+        return (this.left==null && this.right==null);
+    }
+
     @Override
     public String toString(){
         return this.payload;

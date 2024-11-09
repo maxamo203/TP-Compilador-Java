@@ -1,9 +1,11 @@
 package lyc.compiler.files;
-
+import java.util.Stack;
 import java.io.FileWriter;
 import java.io.IOException;
 import lyc.compiler.constants.Constants;
 public class AsmCodeGenerator implements FileGenerator {
+    private static int labelNum = 0;
+    private static Stack<String> labelStack = new Stack<String>();
 
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
@@ -71,30 +73,88 @@ public class AsmCodeGenerator implements FileGenerator {
         }
         return out;
     }
+    
+
+
     private static String generateAsm(Nodo nodo) throws Exception {
         if (nodo == null) {
             return "";
-        }
-        String out = generateAsm(nodo.getLeft()) + generateAsm(nodo.getRight());
+        }       
         String name = nodo.getPayload();
         String asm = "";
+        String out = "";
+
+        if(name == "WHILE"){
+            out = "label" + labelNum + " \n";
+            labelNum++;
+        }
+
+        out += generateAsm(nodo.getLeft());
+        if(name == "AND"){
+            labelNum--;
+            labelStack.pop();
+        }
+
+        out += generateAsm(nodo.getRight());
+        System.out.println(name);
         switch (name) {
             case "=":
-                asm = "FSTP " + nodo.getLeft().getPayload() + "\n";
+                System.out.println(nodo.getRight().isLeaf());
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FSTP " + nodo.getLeft().getPayload() + "\n";
                 break;
             case "+":
-                asm = "FADD\n";
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FADD " + nodo.getRight().getPayload() + "\n";
+                }else{
+                    asm += "FADD \n";
+                    asm += "FFREE 0\n";
+                }
             case "*":
-                asm =  "FMUL\n";
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FMUL " + nodo.getRight().getPayload() + "\n";
+                }else{
+                    asm += "FMUL \n";
+                    asm += "FFREE 0\n";
+                }
             case "-":
-                asm =  "FSUB\n";
-            case "/":
-                asm =  "FDIV\n";
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FSUB " + nodo.getRight().getPayload() + "\n";
+                }else{
+                    asm += "FSUB \n";
+                    asm += "FFREE 0\n";
+                }
+            case "/":                
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FDIV " + nodo.getRight().getPayload() + "\n";
+                }else{
+                    asm += "FDIV \n";
+                    asm += "FFREE 0\n";
+                }
             case "IF":
+                String label = labelStack.pop();
+                asm += label+"\n";
                 break;
             case "ELSE":
+                asm += "label" + labelNum + "end\n";
                 break;
             case "WHILE":
+                asm += "label" + labelNum + "end\n";
+                asm += "JA " + labelNum + "\n";
                 break;
             case "dummy":
                 break;
@@ -103,16 +163,92 @@ public class AsmCodeGenerator implements FileGenerator {
             case "READ":
                 break;
             case "==":
-                break;
-            case "<":
-                break;
-            case ">":
-                break;
-            case ">=":
-                break;
-            case "<=":
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FCOMP LD \n";
+                asm += "FSTSW dest \n";
+                asm += "SAHF \n";
+                asm += "JNE label" + labelNum + "end \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
                 break;
             case "!=":
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FCOMP LD \n";
+                asm += "FSTSW dest \n";
+                asm += "SAHF \n";
+                asm += "JE label" + labelNum + "end \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
+                break;
+            case "<":
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FCOMP LD \n";
+                asm += "FSTSW dest \n";
+                asm += "SAHF \n";
+                asm += "fxch \n";
+                asm += "JAE label" + labelNum + "end \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
+                break;
+            case ">":
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FCOMP LD \n";
+                asm += "FSTSW dest \n";
+                asm += "SAHF \n";
+                asm += "fxch \n";
+                asm += "JNA label" + labelNum + "end \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
+                break;
+            case ">=":
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FCOMP LD \n";
+                asm += "FSTSW dest \n";
+                asm += "SAHF \n";
+                asm += "fxch \n";
+                asm += "JB label" + labelNum + "end \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
+                break;
+            case "<=":
+                if(nodo.getLeft().isLeaf()){
+                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
+                }
+                if(nodo.getRight().isLeaf()){
+                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                }
+                asm += "FCOMP LD \n";
+                asm += "FSTSW dest \n";
+                asm += "SAHF \n";
+                asm += "fxch \n";
+                asm += "JA label" + labelNum + "end \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
                 break;
             case "AND":
                 break;
@@ -121,7 +257,7 @@ public class AsmCodeGenerator implements FileGenerator {
             case "NOT":
                 break;
             default:
-                if(SymbolTableGenerator.containsSymbol(name)){
+                /*if(SymbolTableGenerator.containsSymbol(name)){
                     Symbol symbol = SymbolTableGenerator.getSymbol(name);
                     if(name.startsWith("_") && !symbol.getTipoDato().equals(Symbol.STRING)){
                         asm = "FLD " + name + "\n";
@@ -133,7 +269,7 @@ public class AsmCodeGenerator implements FileGenerator {
                 else{
                     System.out.println("Error: Variable no declarada " + name);
                     asm = "Error: Variable no declarada " + name + "\n";
-                }
+                }*/
                 break;
         }
         return out + asm;
