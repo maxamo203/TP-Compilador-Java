@@ -3,10 +3,22 @@ import java.util.Stack;
 import java.io.FileWriter;
 import java.io.IOException;
 import lyc.compiler.constants.Constants;
+import java.util.Map;
+import java.util.HashMap;
 public class AsmCodeGenerator implements FileGenerator {
     private static int labelNum = 0;
     private static Stack<String> labelStack = new Stack<String>();
-
+    private static boolean isOr = false;
+    private static boolean isNot = false;
+    private static final Map<String, String> comparatorMap = new HashMap<String, String>() {{
+        put("JE", "JNE");
+        put("JNE", "JE");
+        put("JNA", "JA");
+        put("JAE", "JB");
+        put("JA", "JNA");
+        put("JB", "JAE");
+    }};
+    private static int contCond = 2;
     @Override
     public void generate(FileWriter fileWriter) throws IOException {
         fileWriter.write(generarEncabezado());
@@ -16,7 +28,7 @@ public class AsmCodeGenerator implements FileGenerator {
 
             fileWriter.write(generateAsm(Punteros.p_root));
         }catch(Exception e){
-            System.out.println("Error al generar el codigo ASM");
+            System.out.println("Error al generar el codigo ASM" + e);
         }
         fileWriter.write(generarFooter());
     }
@@ -28,7 +40,10 @@ public class AsmCodeGenerator implements FileGenerator {
         out += ".386\n";
         out += ".stack 200h\n";
         out += "MAXTEXTSIZE equ " + Constants.MAX_STRING +"\n";
-        
+        /*
+         * a <= b or c==d => entra
+         * a == b and c<= d => salir
+         */
         return out;
     }
     private static String generarFooter(){
@@ -84,17 +99,23 @@ public class AsmCodeGenerator implements FileGenerator {
         String asm = "";
         String out = "";
 
-        if(name == "WHILE"){
-            out = "label" + labelNum + " \n";
+        if(name.equals("WHILE")){
+            out = "label" + labelNum + ": \n";
             labelNum++;
         }
-
+        if(name == "NOT"){
+            isNot = true;
+        }
+        if(name == "OR"){
+            isOr = true;
+            contCond = 2;
+        }
         out += generateAsm(nodo.getLeft());
         if(name == "AND"){
             labelNum--;
             labelStack.pop();
         }
-
+        
         out += generateAsm(nodo.getRight());
         System.out.println(name);
         switch (name) {
@@ -106,172 +127,113 @@ public class AsmCodeGenerator implements FileGenerator {
                 asm += "FSTP " + nodo.getLeft().getPayload() + "\n";
                 break;
             case "+":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FADD " + nodo.getRight().getPayload() + "\n";
-                }else{
-                    asm += "FADD \n";
-                    asm += "FFREE 0\n";
-                }
+                asm += operacion(nodo,"FADD");
             case "*":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FMUL " + nodo.getRight().getPayload() + "\n";
-                }else{
-                    asm += "FMUL \n";
-                    asm += "FFREE 0\n";
-                }
+                asm += operacion(nodo,"FMUL");
             case "-":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FSUB " + nodo.getRight().getPayload() + "\n";
-                }else{
-                    asm += "FSUB \n";
-                    asm += "FFREE 0\n";
-                }
+                asm += operacion(nodo,"FSUB");
             case "/":                
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FDIV " + nodo.getRight().getPayload() + "\n";
-                }else{
-                    asm += "FDIV \n";
-                    asm += "FFREE 0\n";
-                }
+                asm += operacion(nodo,"FDIV");
             case "IF":
                 String label = labelStack.pop();
-                asm += label+"\n";
+                asm += label+":\n";
                 break;
             case "ELSE":
-                asm += "label" + labelNum + "end\n";
+                asm += "label" + labelNum + "end:\n";
                 break;
             case "WHILE":
-                asm += "label" + labelNum + "end\n";
+                asm += "label" + labelNum + "end:\n";
                 asm += "JA " + labelNum + "\n";
                 break;
             case "dummy":
                 break;
             case "WRITE":
+                asm += "displayString " + nodo.getLeft().getPayload() + "\n";
                 break;
             case "READ":
+                asm += "getString " + nodo.getLeft().getPayload() + "\n";
                 break;
             case "==":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
-                }
-                asm += "FCOMP LD \n";
-                asm += "FSTSW dest \n";
-                asm += "SAHF \n";
-                asm += "JNE label" + labelNum + "end \n";
-                labelStack.push("label"+labelNum+"end");
-                labelNum++;
+                asm += comparator(nodo,"JNE");
                 break;
             case "!=":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
-                }
-                asm += "FCOMP LD \n";
-                asm += "FSTSW dest \n";
-                asm += "SAHF \n";
-                asm += "JE label" + labelNum + "end \n";
-                labelStack.push("label"+labelNum+"end");
-                labelNum++;
+                asm += comparator(nodo,"JE");
                 break;
             case "<":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
-                }
-                asm += "FCOMP LD \n";
-                asm += "FSTSW dest \n";
-                asm += "SAHF \n";
-                asm += "fxch \n";
-                asm += "JAE label" + labelNum + "end \n";
-                labelStack.push("label"+labelNum+"end");
-                labelNum++;
+                asm += comparator(nodo,"JAE");
                 break;
             case ">":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
-                }
-                asm += "FCOMP LD \n";
-                asm += "FSTSW dest \n";
-                asm += "SAHF \n";
-                asm += "fxch \n";
-                asm += "JNA label" + labelNum + "end \n";
-                labelStack.push("label"+labelNum+"end");
-                labelNum++;
+                asm += comparator(nodo,"JNA");
                 break;
             case ">=":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
-                }
-                asm += "FCOMP LD \n";
-                asm += "FSTSW dest \n";
-                asm += "SAHF \n";
-                asm += "fxch \n";
-                asm += "JB label" + labelNum + "end \n";
-                labelStack.push("label"+labelNum+"end");
-                labelNum++;
+                asm += comparator(nodo,"JB");
                 break;
             case "<=":
-                if(nodo.getLeft().isLeaf()){
-                    asm += "FLD " + nodo.getLeft().getPayload() + "\n";
-                }
-                if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
-                }
-                asm += "FCOMP LD \n";
-                asm += "FSTSW dest \n";
-                asm += "SAHF \n";
-                asm += "fxch \n";
-                asm += "JA label" + labelNum + "end \n";
-                labelStack.push("label"+labelNum+"end");
-                labelNum++;
+                asm += comparator(nodo,"JA");
                 break;
             case "AND":
                 break;
             case "OR":
+                isOr = false;
                 break;
             case "NOT":
+                isNot = false;
                 break;
             default:
-                /*if(SymbolTableGenerator.containsSymbol(name)){
-                    Symbol symbol = SymbolTableGenerator.getSymbol(name);
-                    if(name.startsWith("_") && !symbol.getTipoDato().equals(Symbol.STRING)){
-                        asm = "FLD " + name + "\n";
-                    }
-                    else{
-                        asm = "FLD " + name + "\n";
-                    }
-                }
-                else{
-                    System.out.println("Error: Variable no declarada " + name);
-                    asm = "Error: Variable no declarada " + name + "\n";
-                }*/
                 break;
         }
         return out + asm;
+    }
+
+    private static String comparator(Nodo nodo,String commandAsm){
+        String out = "";
+        if(nodo.getLeft().isLeaf()){
+            out += "FLD " + nodo.getLeft().getPayload() + "\n";
+        }
+        if(nodo.getRight().isLeaf()){
+            out += "FLD " + nodo.getRight().getPayload() + "\n";
+        }
+        out += "FCOMP \n";
+        out += "FSTSW AX \n";
+        out += "SAHF \n";
+        out += "fxch \n";
+        if(isNot){
+            commandAsm = comparatorMap.get(commandAsm);
+            out += commandAsm + " label" + labelNum + "end \n";
+            labelStack.push("label"+labelNum+"end");
+            labelNum++;
+        }
+        else if(isOr){
+            contCond--;
+            if(contCond == 0){
+                out += commandAsm + " label" + labelNum + "end \n";
+                out += "label" + labelNum + "start: \n";
+                labelStack.push("label"+labelNum+"end");
+                labelNum++;
+            }
+            else{
+                commandAsm = comparatorMap.get(commandAsm);
+                out += commandAsm + " label" + labelNum + "start \n";
+            }
+        }else{ //AND
+            out += commandAsm + " label" + labelNum + "end \n";
+            labelStack.push("label"+labelNum+"end");
+            labelNum++;
+        }
+
+        
+        return out;
+    }
+    private static String operacion(Nodo nodo, String operacion){
+        String out = "";
+        if(nodo.getLeft().isLeaf()){
+            out += "FLD " + nodo.getLeft().getPayload() + "\n";
+        }
+        if(nodo.getRight().isLeaf()){
+            out += operacion +  " " + nodo.getRight().getPayload() + "\n";
+        }
+        out += operacion + "\n";
+        out += "FFREE 0\n";
+        return out;
     }
 }

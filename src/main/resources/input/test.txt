@@ -14,7 +14,17 @@ si(c < 2 AND c<3){
         a:=3
     }
 }
-si(c <= 2){
+si(c == 222 OR c > 444){
+    b := 3
+    si(c == 333 AND c > 555){
     b := 3
 }
+}
 
+
+si(c < 2){
+
+escribir("hola")
+}sino{
+    escribir("chau")
+}
