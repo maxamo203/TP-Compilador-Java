@@ -5,6 +5,9 @@ import java.io.IOException;
 import lyc.compiler.constants.Constants;
 import java.util.Map;
 import java.util.HashMap;
+import lyc.compiler.files.SymbolTableGenerator;
+import lyc.compiler.files.Symbol;
+
 public class AsmCodeGenerator implements FileGenerator {
     private static int labelNum = 0;
     private static Stack<String> labelStack = new Stack<String>();
@@ -28,7 +31,7 @@ public class AsmCodeGenerator implements FileGenerator {
 
             fileWriter.write(generateAsm(Punteros.p_root));
         }catch(Exception e){
-            System.out.println("Error al generar el codigo ASM" + e);
+            System.out.println("Error al generar el codigo ASM: " + e);
         }
         fileWriter.write(generarFooter());
     }
@@ -40,15 +43,11 @@ public class AsmCodeGenerator implements FileGenerator {
         out += ".386\n";
         out += ".stack 200h\n";
         out += "MAXTEXTSIZE equ " + Constants.MAX_STRING +"\n";
-        /*
-         * a <= b or c==d => entra
-         * a == b and c<= d => salir
-         */
         return out;
     }
     private static String generarFooter(){
         String out = "";
-        out += "MOV AH, 4C00H\n";
+        out += "MOV AH, 4CH\n";
         out += "INT 21H\n";
         out += "END START\n";
         return out;
@@ -100,7 +99,8 @@ public class AsmCodeGenerator implements FileGenerator {
         String out = "";
 
         if(name.equals("WHILE")){
-            out = "label" + labelNum + ": \n";
+            out = "label" + labelNum + "start: \n";
+            labelStack.push("label" + labelNum + "start: \n");
             labelNum++;
         }
         if(name == "NOT"){
@@ -111,16 +111,20 @@ public class AsmCodeGenerator implements FileGenerator {
             contCond = 2;
         }
         out += generateAsm(nodo.getLeft());
+        if(name == "ELSE"){
+            String label = labelStack.pop();
+            out += "JMP " + "label" +labelNum + "finif\n";
+            out += label + ": \n";
+            labelStack.push("label" +labelNum + "finif");
+        }
         if(name == "AND"){
             labelNum--;
             labelStack.pop();
         }
         
         out += generateAsm(nodo.getRight());
-        System.out.println(name);
         switch (name) {
             case "=":
-                System.out.println(nodo.getRight().isLeaf());
                 if(nodo.getRight().isLeaf()){
                     asm += "FLD " + nodo.getRight().getPayload() + "\n";
                 }
@@ -128,30 +132,47 @@ public class AsmCodeGenerator implements FileGenerator {
                 break;
             case "+":
                 asm += operacion(nodo,"FADD");
+                break;
             case "*":
                 asm += operacion(nodo,"FMUL");
+                break;
             case "-":
                 asm += operacion(nodo,"FSUB");
+                break;
             case "/":                
                 asm += operacion(nodo,"FDIV");
+                break;
             case "IF":
                 String label = labelStack.pop();
                 asm += label+":\n";
                 break;
             case "ELSE":
-                asm += "label" + labelNum + "end:\n";
                 break;
             case "WHILE":
-                asm += "label" + labelNum + "end:\n";
-                asm += "JA " + labelNum + "\n";
+                String label3 = labelStack.pop();
+                String label2 = labelStack.pop();
+                asm += "JMP " + label2 + "\n";
+                asm += label3 + ":\n";
                 break;
             case "dummy":
                 break;
             case "WRITE":
-                asm += "displayString " + nodo.getLeft().getPayload() + "\n";
+                String tipo = new SymbolTableGenerator().getSymbol(nodo.getLeft().getPayload()).getTipoDato();
+                if(tipo.equals(Symbol.INTEGER) || tipo.equals(Symbol.FLOAT)){
+                    asm += "DisplayFloat " + nodo.getLeft().getPayload() + "\n";
+                }
+                else if(tipo.equals(Symbol.STRING)){
+                    asm += "DisplayString " + nodo.getLeft().getPayload() + "\n";
+                }
                 break;
             case "READ":
-                asm += "getString " + nodo.getLeft().getPayload() + "\n";
+                String tipo2 = new SymbolTableGenerator().getSymbol(nodo.getLeft().getPayload()).getTipoDato();
+                if(tipo2.equals(Symbol.INTEGER) || tipo2.equals(Symbol.FLOAT)){
+                    asm += "GetFloat " + nodo.getLeft().getPayload() + "\n";
+                }
+                else if(tipo2.equals(Symbol.STRING)){
+                    asm += "GetString " + nodo.getLeft().getPayload() + "\n";
+                }
                 break;
             case "==":
                 asm += comparator(nodo,"JNE");
@@ -193,10 +214,12 @@ public class AsmCodeGenerator implements FileGenerator {
         if(nodo.getRight().isLeaf()){
             out += "FLD " + nodo.getRight().getPayload() + "\n";
         }
+        if(!(commandAsm == "JNE" || commandAsm == "JE")){
+            out += "fxch \n";
+        }
         out += "FCOMP \n";
         out += "FSTSW AX \n";
         out += "SAHF \n";
-        out += "fxch \n";
         if(isNot){
             commandAsm = comparatorMap.get(commandAsm);
             out += commandAsm + " label" + labelNum + "end \n";
@@ -207,7 +230,7 @@ public class AsmCodeGenerator implements FileGenerator {
             contCond--;
             if(contCond == 0){
                 out += commandAsm + " label" + labelNum + "end \n";
-                out += "label" + labelNum + "start: \n";
+                out += "label" + labelNum + "start: \n"; //agrega la etiqueta de salto para la primer condicion del or
                 labelStack.push("label"+labelNum+"end");
                 labelNum++;
             }
@@ -215,7 +238,7 @@ public class AsmCodeGenerator implements FileGenerator {
                 commandAsm = comparatorMap.get(commandAsm);
                 out += commandAsm + " label" + labelNum + "start \n";
             }
-        }else{ //AND
+        }else{ //AND o comparacion normal
             out += commandAsm + " label" + labelNum + "end \n";
             labelStack.push("label"+labelNum+"end");
             labelNum++;
@@ -224,16 +247,19 @@ public class AsmCodeGenerator implements FileGenerator {
         
         return out;
     }
-    private static String operacion(Nodo nodo, String operacion){
+    private static String operacion(Nodo nodo, String operacionParam){
         String out = "";
         if(nodo.getLeft().isLeaf()){
             out += "FLD " + nodo.getLeft().getPayload() + "\n";
         }
         if(nodo.getRight().isLeaf()){
-            out += operacion +  " " + nodo.getRight().getPayload() + "\n";
+            out += operacionParam +  " " + nodo.getRight().getPayload() + "\n";
         }
-        out += operacion + "\n";
-        out += "FFREE 0\n";
+        else{
+            out += "fxch \n"; //para dar vuelta en caso de resta o division (lo hace innesesariamente en suma y multiplicacion)
+            out += operacionParam + "\n";
+            out += "FFREE 0\n";
+        }
         return out;
     }
 }

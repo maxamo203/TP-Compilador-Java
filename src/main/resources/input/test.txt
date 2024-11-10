@@ -1,18 +1,16 @@
 *-inicializacion-*
 init{
     a,b,c,d,e: Int
+    id: String
 }
 
 *-asignaciones-*
 c := 3
-a := 1
-
+a := 1 - 3 /(4 +5)
+leer(id)
 *-condicionales-*
-si(c < 2 AND c<3){
+si(c < 2){
     b := 3
-    si(b>=3){
-        a:=3
-    }
 }
 si(c == 222 OR c > 444){
     b := 3
@@ -22,9 +20,11 @@ si(c == 222 OR c > 444){
 }
 
 
-si(c < 2){
+mientras(a<444 OR b == 666){
+    mientras(NOT 2==3){
 
-escribir("hola")
-}sino{
-    escribir("chau")
+    escribir("muejaja")
+    }
 }
+
+escribir(id)

@@ -243,11 +243,11 @@ factor ::= SUB factor
 
 factor ::= IDENTIFIER:id  
     {: System.out.println("Id: " + id);
-    try{
-        validarTipoNumero(id+"");
-    }catch (Exception e){
-        throw new SemanticException("No se pueden realizar operaciones aritmeticas con una variable String");
-    }
+    // try{
+    //     validarTipoNumero(id+"");
+    // }catch (Exception e){
+    //     throw new SemanticException("No se pueden realizar operaciones aritmeticas con una variable String");
+    // }
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
