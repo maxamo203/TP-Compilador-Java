@@ -13,6 +13,7 @@ a := 1
 *-b := "tipo incorrecto"-*
 e := 22
 cadena1 := "Hola Mundo"
+*-cadena1 := 3-*
 *-cadena2 := "@unlam$!-*
 triangulo1 := triangulo2
 *-cadenaLargaJusta := "1234567890123456789012345678901234567890" -*

@@ -16,6 +16,7 @@ parser code {:
   }
   public static void validarTipoTexto(String id) throws Exception {
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
+    System.out.println(symbolId.getTipoDato() + " " + id);
     if(symbolId.getTipoDato().equals(Symbol.INTEGER)){
         throw new SemanticException("Se intento asignar a la variable INTEGER <<" + id + ">> una cadena");
     }else if(symbolId.getTipoDato().equals(Symbol.FLOAT)){
@@ -197,9 +198,15 @@ assignment ::= IDENTIFIER:id ASSIG {:if(new SymbolTableGenerator().getSymbol(id+
             Punteros.Apilar(Nodo.crearHijo("@allowStringOperation"));
     }:} expression 
     {: System.out.println("Assignment: " + id );
-    if(Punteros.getTop() != null && !Punteros.getTop().getPayload().equals("@allowStringOperation")){
+    if(Punteros.getTop() != null){
+        if(Punteros.getTop().getPayload().equals("@allowStringOperation")){
+            validarTipoTexto(id+"");
+        }else{
             validarTipoNumero(id+"");
         }
+    }else{
+        validarTipoNumero(id+"");
+    }
     Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion);
     if(new SymbolTableGenerator().getSymbol(id+"").getTipoDato() == Symbol.STRING) Punteros.Desapilar(); :};
 
@@ -251,21 +258,40 @@ factor ::= IDENTIFIER:id
     {: System.out.println("Id: " + id);
     try{
         System.out.println("Validando tipo de numero 1");
-        if(Punteros.getTop() != null && !Punteros.getTop().getPayload().equals("@allowStringOperation")){
-            System.out.println("Validando tipo de numero 2");
+        if(Punteros.getTop() != null){
+
+            if(Punteros.getTop().getPayload().equals("@allowStringOperation")){
+                validarTipoTexto(id+"");
+                System.out.println("ola?");
+            }else if(Punteros.getTop().getPayload().equals("@allowAll")){
+            }
+            else{
+                validarTipoNumero(id+"");
+            }
+        }else{
             validarTipoNumero(id+"");
         }
     }catch (Exception e){
-        throw new SemanticException("No se pueden realizar operaciones aritmeticas con una variable String: "+ e );
+        throw new SemanticException("No se pueden realizar operaciones aritmeticas con una variable String: "+ id );
     }
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
     {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,""+constant,0);
+    if(Punteros.getTop() != null){
+        if(Punteros.getTop().getPayload().equals("@allowStringOperation")){
+            throw new SemanticException("No se pueden realizar operaciones aritmeticas a una constante String: "+ constant );
+        }
+    }
     Punteros.p_factor = Nodo.crearHijo("_"+constant); :};
 
 factor ::= FLOAT_CONSTANT:constant 
     {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+castFloatCte(constant.toString()),Symbol.FLOAT,constant.toString(),0);
+    if(Punteros.getTop() != null){
+        if(Punteros.getTop().getPayload().equals("@allowStringOperation")){
+            throw new SemanticException("No se pueden realizar operaciones aritmeticas a una constante String: "+ constant );
+        }
+    }
         Punteros.p_factor = Nodo.crearHijo("_"  + castFloatCte(constant+"")); :};
 
 factor ::= OPEN_BRACKET {:Punteros.Apilar(Punteros.p_term);Punteros.Apilar(Punteros.p_expresion);:} expression CLOSE_BRACKET 
@@ -349,7 +375,7 @@ read ::= LEER OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET
     {: System.out.println("Lectura");
     Punteros.p_read = Nodo.crearNodo("READ", Nodo.crearHijo(id+""), null);:};
 
-write ::= ESCRIBIR OPEN_BRACKET {:Punteros.Apilar(Nodo.crearHijo("@allowStringOperation"));:} expression CLOSE_BRACKET 
+write ::= ESCRIBIR OPEN_BRACKET {:Punteros.Apilar(Nodo.crearHijo("@allowAll"));:} expression CLOSE_BRACKET 
     {: System.out.println("Escritura de numeros");
     Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion, null);
     Punteros.Desapilar();:};

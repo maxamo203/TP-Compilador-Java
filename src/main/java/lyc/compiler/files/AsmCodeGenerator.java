@@ -249,6 +249,7 @@ public class AsmCodeGenerator implements FileGenerator {
     }
     private static String operacion(Nodo nodo, String operacionParam){
         String out = "";
+        boolean isLeftLeaf = nodo.getLeft().isLeaf();
         if(nodo.getLeft().isLeaf()){
             out += "FLD " + nodo.getLeft().getPayload() + "\n";
         }
@@ -256,7 +257,7 @@ public class AsmCodeGenerator implements FileGenerator {
             out += operacionParam +  " " + nodo.getRight().getPayload() + "\n";
         }
         else{
-            out += "fxch \n"; //para dar vuelta en caso de resta o division (lo hace innesesariamente en suma y multiplicacion)
+            out += isLeftLeaf ? "fxch \n": ""; //para dar vuelta en caso de resta o division (lo hace innesesariamente en suma y multiplicacion)
             out += operacionParam + "\n";
             out += "FFREE 0\n";
         }
