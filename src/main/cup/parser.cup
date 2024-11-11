@@ -10,15 +10,15 @@ class Parser;
 parser code {:
   public static void validarTipoNumero(String id) throws Exception {
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
-    if(symbolId.getTipoDato() == Symbol.STRING){
+    if(symbolId.getTipoDato().equals(Symbol.STRING)){
         throw new SemanticException("Se intento asignar a la variable STRING <<" + id + ">> un valor numerico");
     }
   }
   public static void validarTipoTexto(String id) throws Exception {
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
-    if(symbolId.getTipoDato() == Symbol.INTEGER){
+    if(symbolId.getTipoDato().equals(Symbol.INTEGER)){
         throw new SemanticException("Se intento asignar a la variable INTEGER <<" + id + ">> una cadena");
-    }else if(symbolId.getTipoDato()  == Symbol.FLOAT){
+    }else if(symbolId.getTipoDato().equals(Symbol.FLOAT)){
         throw new SemanticException("Se intento asignar a la variable FLOAT <<" + id + ">> una cadena");
     }
   }
@@ -192,10 +192,16 @@ sentence ::= write
     {:System.out.println("write");
     Punteros.p_sentencia = Punteros.p_write;:};
 
-assignment ::= IDENTIFIER:id ASSIG expression 
+assignment ::= IDENTIFIER:id ASSIG {:if(new SymbolTableGenerator().getSymbol(id+"").getTipoDato() == Symbol.STRING){
+        System.out.println("Permitir operaciones con string a: " + id);
+            Punteros.Apilar(Nodo.crearHijo("@allowStringOperation"));
+    }:} expression 
     {: System.out.println("Assignment: " + id );
-    validarTipoNumero(id+"");
-    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion); :};
+    if(Punteros.getTop() != null && !Punteros.getTop().getPayload().equals("@allowStringOperation")){
+            validarTipoNumero(id+"");
+        }
+    Punteros.p_asignacion = Nodo.crearNodo("=", Nodo.crearHijo(id+""), Punteros.p_expresion);
+    if(new SymbolTableGenerator().getSymbol(id+"").getTipoDato() == Symbol.STRING) Punteros.Desapilar(); :};
 
 assignment ::= IDENTIFIER:id ASSIG expresionTexto 
     {: System.out.println("Text Assignment");
@@ -243,11 +249,15 @@ factor ::= SUB factor
 
 factor ::= IDENTIFIER:id  
     {: System.out.println("Id: " + id);
-    // try{
-    //     validarTipoNumero(id+"");
-    // }catch (Exception e){
-    //     throw new SemanticException("No se pueden realizar operaciones aritmeticas con una variable String");
-    // }
+    try{
+        System.out.println("Validando tipo de numero 1");
+        if(Punteros.getTop() != null && !Punteros.getTop().getPayload().equals("@allowStringOperation")){
+            System.out.println("Validando tipo de numero 2");
+            validarTipoNumero(id+"");
+        }
+    }catch (Exception e){
+        throw new SemanticException("No se pueden realizar operaciones aritmeticas con una variable String: "+ e );
+    }
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
@@ -339,21 +349,14 @@ read ::= LEER OPEN_BRACKET IDENTIFIER:id CLOSE_BRACKET
     {: System.out.println("Lectura");
     Punteros.p_read = Nodo.crearNodo("READ", Nodo.crearHijo(id+""), null);:};
 
-write ::= ESCRIBIR OPEN_BRACKET expression CLOSE_BRACKET 
+write ::= ESCRIBIR OPEN_BRACKET {:Punteros.Apilar(Nodo.crearHijo("@allowStringOperation"));:} expression CLOSE_BRACKET 
     {: System.out.println("Escritura de numeros");
-    Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion, null);:};
+    Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion, null);
+    Punteros.Desapilar();:};
 
 write ::= ESCRIBIR OPEN_BRACKET expresionTexto CLOSE_BRACKET 
     {: System.out.println("Escritura de texto");
     Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion_texto, null);:};
-
-write ::= ESCRIBIR OPEN_BRACKET TYPE_STRING IDENTIFIER:id CLOSE_BRACKET 
-    {: System.out.println("Escritura de texto");
-        if(new SymbolTableGenerator().getSymbol(id+"").getTipoDato() != Symbol.STRING){
-            throw new SemanticException("Se esperaba una variable del tipo String");
-        }
-    Punteros.p_write = Nodo.crearNodo("WRITE", Punteros.p_expresion_texto, null);:};
-
 
 triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.crearNodo("=",Nodo.crearHijo("@tri1"), Punteros.p_expresion);:} 
             COMMA expression {:

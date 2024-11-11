@@ -30,7 +30,11 @@ public class Punteros {
         return nodoStack.pop();
     }
     public static Nodo getTop(){
-        return nodoStack.peek();
+        try{
+            return nodoStack.peek();
+        }catch(Exception e){
+            return null;
+        }
     }
     public static boolean isEmptyStack(){
         return nodoStack.isEmpty();
