@@ -10,16 +10,16 @@ class Parser;
 parser code {:
   public static void validarTipoNumero(String id) throws Exception {
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
-    if(symbolId.getTipoDato().equals(Symbol.STRING)){
+    if(symbolId.getTipoDato().equals(Symbol.STRING) || symbolId.getTipoDato().equals(Symbol.CTE_STRING)){
         throw new SemanticException("Se intento asignar a la variable STRING <<" + id + ">> un valor numerico");
     }
   }
   public static void validarTipoTexto(String id) throws Exception {
     Symbol symbolId = new SymbolTableGenerator().getSymbol(id+"");
     System.out.println(symbolId.getTipoDato() + " " + id);
-    if(symbolId.getTipoDato().equals(Symbol.INTEGER)){
+    if(symbolId.getTipoDato().equals(Symbol.INTEGER) || symbolId.getTipoDato().equals(Symbol.CTE_INTEGER)){
         throw new SemanticException("Se intento asignar a la variable INTEGER <<" + id + ">> una cadena");
-    }else if(symbolId.getTipoDato().equals(Symbol.FLOAT)){
+    }else if(symbolId.getTipoDato().equals(Symbol.FLOAT) || symbolId.getTipoDato().equals(Symbol.CTE_FLOAT)){
         throw new SemanticException("Se intento asignar a la variable FLOAT <<" + id + ">> una cadena");
     }
   }
@@ -251,7 +251,7 @@ term ::= factor
 
 factor ::= SUB factor
     {: System.out.println("- unario");
-    new SymbolTableGenerator().addSymbol("_0",Symbol.INTEGER,"0",0);
+    new SymbolTableGenerator().addSymbol("_0",Symbol.CTE_INTEGER,"0",0);
     Punteros.p_factor = Nodo.crearNodo("-", Nodo.crearHijo("_0"),Punteros.p_factor);:};
 
 factor ::= IDENTIFIER:id  
@@ -277,7 +277,7 @@ factor ::= IDENTIFIER:id
     Punteros.p_factor = Nodo.crearHijo(id+""); :};
 
 factor ::= INTEGER_CONSTANT:constant 
-    {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.INTEGER,""+constant,0);
+    {: System.out.println("Constant: " + constant ); new SymbolTableGenerator().addSymbol("_"+constant.toString(),Symbol.CTE_INTEGER,""+constant,0);
     if(Punteros.getTop() != null){
         if(Punteros.getTop().getPayload().equals("@allowStringOperation")){
             throw new SemanticException("No se pueden realizar operaciones aritmeticas a una constante String: "+ constant );
@@ -286,7 +286,7 @@ factor ::= INTEGER_CONSTANT:constant
     Punteros.p_factor = Nodo.crearHijo("_"+constant); :};
 
 factor ::= FLOAT_CONSTANT:constant 
-    {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+castFloatCte(constant.toString()),Symbol.FLOAT,constant.toString(),0);
+    {: System.out.println("Constant Float: " + constant );new SymbolTableGenerator().addSymbol("_"+castFloatCte(constant.toString()),Symbol.CTE_FLOAT,constant.toString(),0);
     if(Punteros.getTop() != null){
         if(Punteros.getTop().getPayload().equals("@allowStringOperation")){
             throw new SemanticException("No se pueden realizar operaciones aritmeticas a una constante String: "+ constant );
@@ -299,7 +299,7 @@ factor ::= OPEN_BRACKET {:Punteros.Apilar(Punteros.p_term);Punteros.Apilar(Punte
     Punteros.p_factor = Punteros.p_expresion; Punteros.p_expresion = Punteros.Desapilar(); Punteros.p_term = Punteros.Desapilar(); :};
 
 expresionTexto ::= STRING_CONSTANT:cte 
-    {:new SymbolTableGenerator().addSymbol("_" + castStringCte(cte.toString()),Symbol.STRING,cte.toString(),cte.toString().length()-2);
+    {:new SymbolTableGenerator().addSymbol("_" + castStringCte(cte.toString()),Symbol.CTE_STRING,cte.toString(),cte.toString().length()-2);
     Punteros.p_expresion_texto = Nodo.crearHijo("_"+castStringCte(cte+""));:};
 
 selection ::= ifsimple
@@ -397,9 +397,9 @@ triangulo ::= TRIANGULO OPEN_BRACKET expression {:Punteros.p_triangulo = Nodo.cr
             new SymbolTableGenerator().addSymbol("@tri2",Symbol.FLOAT,"-",0);
             new SymbolTableGenerator().addSymbol("@tri3",Symbol.FLOAT,"-",0);
             new SymbolTableGenerator().addSymbol("@triangulo",Symbol.STRING,"-",0);
-            new SymbolTableGenerator().addSymbol("_equilatero",Symbol.STRING,"Equilatero",10);
-            new SymbolTableGenerator().addSymbol("_isoceles",Symbol.STRING,"Isoceles",8);
-            new SymbolTableGenerator().addSymbol("_escaleno",Symbol.STRING,"Escaleno",8);
+            new SymbolTableGenerator().addSymbol("_equilatero",Symbol.CTE_STRING,"Equilatero",10);
+            new SymbolTableGenerator().addSymbol("_isoceles",Symbol.CTE_STRING,"Isoceles",8);
+            new SymbolTableGenerator().addSymbol("_escaleno",Symbol.CTE_STRING,"Escaleno",8);
             Nodo comp1 = Nodo.crearNodo("==",Nodo.crearHijo("@tri1"),Nodo.crearHijo("@tri2"));
             Nodo comp2 = Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3"));
             Nodo comp3 = Nodo.crearNodo("==",Nodo.crearHijo("@tri2"),Nodo.crearHijo("@tri3"));

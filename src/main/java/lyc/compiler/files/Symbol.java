@@ -3,9 +3,12 @@ package lyc.compiler.files;
 public class Symbol {
     // Definimos constantes estáticas para representar los tipos de datos
     public static final String UNKNOWN = "UNKNOWN";
-    public static final String INTEGER = "CTE_INTEGER";
-    public static final String FLOAT = "CTE_FLOAT";
-    public static final String STRING = "CTE_STRING"; 
+    public static final String INTEGER = "INTEGER";
+    public static final String FLOAT = "FLOAT";
+    public static final String STRING = "STRING";
+    public static final String CTE_INTEGER = "CTE_INTEGER";
+    public static final String CTE_FLOAT = "CTE_FLOAT";
+    public static final String CTE_STRING = "CTE_STRING";
 
     private String nombre;
     private String tipoDato;
