@@ -66,14 +66,14 @@ public class AsmCodeGenerator implements FileGenerator {
         try{
             for(String key : SymbolTableGenerator.getSymbolTable().keySet()) {
                 Symbol symbol = SymbolTableGenerator.getSymbol(key);
-                if(symbol.getTipoDato().equals(Symbol.INTEGER) || symbol.getTipoDato().equals(Symbol.FLOAT)){
+                if(isNumber(key)){
                     out += key + " DD ";
                     if(symbol.getValor().equals("-"))
                         out += " ?\n";
                     else
                         out += symbol.getValor() + "\n";
                 }
-                else if(symbol.getTipoDato().equals(Symbol.STRING)){
+                else if(isString(key)){
                     out += key + " DB ";
                     if(symbol.getValor().equals("-"))
                         out += "MAXTEXTSIZE" +" dup (?)\n";
@@ -116,6 +116,7 @@ public class AsmCodeGenerator implements FileGenerator {
             out += "JMP " + "label" +labelNum + "finif\n";
             out += label + ": \n";
             labelStack.push("label" +labelNum + "finif");
+            labelNum++;
         }
         if(name == "AND"){
             labelNum--;
@@ -126,9 +127,19 @@ public class AsmCodeGenerator implements FileGenerator {
         switch (name) {
             case "=":
                 if(nodo.getRight().isLeaf()){
-                    asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                    if(isNumber(nodo.getRight().getPayload())){
+                        asm += "FLD " + nodo.getRight().getPayload() + "\n";
+                    }
+                    else if(isString(nodo.getRight().getPayload())){
+                        asm += "LEA SI, " + nodo.getRight().getPayload() + "\n";
+                    }
                 }
-                asm += "FSTP " + nodo.getLeft().getPayload() + "\n";
+                if(isNumber(nodo.getLeft().getPayload())){
+                    asm += "FSTP " + nodo.getLeft().getPayload() + "\n";
+                }else{
+                    //TODO
+                    //asm += "MOV " + nodo.getLeft().getPayload() + ",SI\n";
+                }
                 break;
             case "+":
                 asm += operacion(nodo,"FADD");
@@ -157,20 +168,21 @@ public class AsmCodeGenerator implements FileGenerator {
             case "dummy":
                 break;
             case "WRITE":
-                String tipo = new SymbolTableGenerator().getSymbol(nodo.getLeft().getPayload()).getTipoDato();
-                if(tipo.equals(Symbol.INTEGER) || tipo.equals(Symbol.FLOAT)){
-                    asm += "DisplayFloat " + nodo.getLeft().getPayload() + "\n";
+                if(isNumber(nodo.getLeft().getPayload())){
+                    asm += "DisplayFloat " + nodo.getLeft().getPayload() + ",2\n";
                 }
-                else if(tipo.equals(Symbol.STRING)){
-                    asm += "DisplayString " + nodo.getLeft().getPayload() + "\n";
+                else if(isString(nodo.getLeft().getPayload())){
+                    asm += "MOV DX,OFFSET " + nodo.getLeft().getPayload() + "\n";
+                    asm += "MOV AH,9"+ "\n";
+                    asm += "INT 21h"+ "\n";
                 }
                 break;
             case "READ":
-                String tipo2 = new SymbolTableGenerator().getSymbol(nodo.getLeft().getPayload()).getTipoDato();
-                if(tipo2.equals(Symbol.INTEGER) || tipo2.equals(Symbol.FLOAT)){
+                
+                if(isIdNumber(nodo.getLeft().getPayload())){
                     asm += "GetFloat " + nodo.getLeft().getPayload() + "\n";
                 }
-                else if(tipo2.equals(Symbol.STRING)){
+                else if(isIdString(nodo.getLeft().getPayload())){
                     asm += "GetString " + nodo.getLeft().getPayload() + "\n";
                 }
                 break;
@@ -259,8 +271,25 @@ public class AsmCodeGenerator implements FileGenerator {
         else{
             out += isLeftLeaf ? "fxch \n": ""; //para dar vuelta en caso de resta o division (lo hace innesesariamente en suma y multiplicacion)
             out += operacionParam + "\n";
+            //TODO: Free?
             out += "FFREE 0\n";
         }
         return out;
+    }
+    private static boolean isNumber(String str) throws Exception{
+        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        return tipo.equals(Symbol.INTEGER) || tipo.equals(Symbol.FLOAT) || tipo.equals(Symbol.CTE_FLOAT) || tipo.equals(Symbol.CTE_INTEGER);
+    }
+    private static boolean isString(String str) throws Exception{
+        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        return tipo.equals(Symbol.STRING) || tipo.equals(Symbol.CTE_STRING);
+    }
+    private static boolean isIdNumber(String str) throws Exception{
+        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        return str.equals(Symbol.INTEGER) || str.equals(Symbol.FLOAT);
+    }
+    private static boolean isIdString(String str) throws Exception{
+        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        return str.equals(Symbol.STRING);
     }
 }
