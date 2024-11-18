@@ -117,7 +117,7 @@ Comment = {StartComment}(.)*?{EndComment}
   {Leer}                                  {return symbol(ParserSym.LEER);}  
   {Escribir}                                  {return symbol(ParserSym.ESCRIBIR);}  
   /* identifiers */
-  {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthException(yytext()); }
+  {Identifier}                              { if(yylength() > MAX_LENGTH){ throw new InvalidLengthIdException(yytext()); }
                                             else{return symbol(ParserSym.IDENTIFIER, yytext());}}
   /* Constants */
   {IntegerConstant}                        { { if(Integer.parseInt(yytext()) >= MAX_INT){ throw new InvalidIntegerException(yytext()); }

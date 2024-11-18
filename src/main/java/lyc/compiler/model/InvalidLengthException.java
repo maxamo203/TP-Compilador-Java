@@ -8,7 +8,7 @@ public class InvalidLengthException extends CompilerException {
     private static final long serialVersionUID = -6649278000190971816L;
 
     public InvalidLengthException(String message) {
-        super(message);
+        super("Longitud Invalida de String: " + message);
     }
 
 }
