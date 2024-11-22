@@ -70,8 +70,12 @@ public class AsmCodeGenerator implements FileGenerator {
                     out += key + " DD ";
                     if(symbol.getValor().equals("-"))
                         out += " ?\n";
-                    else
+                    else if(symbol.getTipoDato().equals(Symbol.CTE_INTEGER)){  
+                        out += symbol.getValor() + ".0 \n";
+                    }else{
                         out += symbol.getValor() + "\n";
+                    }
+                        
                 }
                 else if(isString(key)){
                     out += key + " DB ";
@@ -95,12 +99,13 @@ public class AsmCodeGenerator implements FileGenerator {
             return "";
         }       
         String name = nodo.getPayload();
+        System.out.println(name);
         String asm = "";
         String out = "";
 
         if(name.equals("WHILE")){
             out = "label" + labelNum + "start: \n";
-            labelStack.push("label" + labelNum + "start: \n");
+            labelStack.push("label" + labelNum + "start\n");
             labelNum++;
         }
         if(name == "NOT"){
@@ -131,7 +136,7 @@ public class AsmCodeGenerator implements FileGenerator {
                         asm += "FLD " + nodo.getRight().getPayload() + "\n";
                     }
                     else if(isString(nodo.getRight().getPayload())){
-                        asm += "LEA SI, " + nodo.getRight().getPayload() + "\n";
+                        asm += "copyString " + nodo.getRight().getPayload() + ", " + nodo.getLeft().getPayload() + "\n";
                     }
                 }
                 if(isNumber(nodo.getLeft().getPayload())){
@@ -169,16 +174,14 @@ public class AsmCodeGenerator implements FileGenerator {
                 break;
             case "WRITE":
                 if(isNumber(nodo.getLeft().getPayload())){
-                    asm += "DisplayFloat " + nodo.getLeft().getPayload() + ",2\n";
+                    asm += "displayFloat " + nodo.getLeft().getPayload() + ",2\n";
                 }
                 else if(isString(nodo.getLeft().getPayload())){
-                    asm += "MOV DX,OFFSET " + nodo.getLeft().getPayload() + "\n";
-                    asm += "MOV AH,9"+ "\n";
-                    asm += "INT 21h"+ "\n";
+                    asm += "displayString " + nodo.getLeft().getPayload() + "\n";
                 }
+                asm+= "newLine 1 \n";
                 break;
             case "READ":
-                
                 if(isIdNumber(nodo.getLeft().getPayload())){
                     asm += "GetFloat " + nodo.getLeft().getPayload() + "\n";
                 }
@@ -271,8 +274,6 @@ public class AsmCodeGenerator implements FileGenerator {
         else{
             out += isLeftLeaf ? "fxch \n": ""; //para dar vuelta en caso de resta o division (lo hace innesesariamente en suma y multiplicacion)
             out += operacionParam + "\n";
-            //TODO: Free?
-            out += "FFREE 0\n";
         }
         return out;
     }
@@ -286,10 +287,10 @@ public class AsmCodeGenerator implements FileGenerator {
     }
     private static boolean isIdNumber(String str) throws Exception{
         String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
-        return str.equals(Symbol.INTEGER) || str.equals(Symbol.FLOAT);
+        return tipo.equals(Symbol.INTEGER) || tipo.equals(Symbol.FLOAT);
     }
     private static boolean isIdString(String str) throws Exception{
         String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
-        return str.equals(Symbol.STRING);
+        return tipo.equals(Symbol.STRING);
     }
 }
