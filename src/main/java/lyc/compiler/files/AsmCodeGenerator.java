@@ -99,7 +99,6 @@ public class AsmCodeGenerator implements FileGenerator {
             return "";
         }       
         String name = nodo.getPayload();
-        System.out.println(name);
         String asm = "";
         String out = "";
 
@@ -142,7 +141,7 @@ public class AsmCodeGenerator implements FileGenerator {
                 if(isNumber(nodo.getLeft().getPayload())){
                     asm += "FSTP " + nodo.getLeft().getPayload() + "\n";
                 }else{
-                    //TODO
+                    //No existe macro para copiar una cte string a una variable String
                     //asm += "MOV " + nodo.getLeft().getPayload() + ",SI\n";
                 }
                 break;
@@ -278,19 +277,19 @@ public class AsmCodeGenerator implements FileGenerator {
         return out;
     }
     private static boolean isNumber(String str) throws Exception{
-        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        String tipo = SymbolTableGenerator.getSymbol(str).getTipoDato();
         return tipo.equals(Symbol.INTEGER) || tipo.equals(Symbol.FLOAT) || tipo.equals(Symbol.CTE_FLOAT) || tipo.equals(Symbol.CTE_INTEGER);
     }
     private static boolean isString(String str) throws Exception{
-        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        String tipo = SymbolTableGenerator.getSymbol(str).getTipoDato();
         return tipo.equals(Symbol.STRING) || tipo.equals(Symbol.CTE_STRING);
     }
     private static boolean isIdNumber(String str) throws Exception{
-        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        String tipo = SymbolTableGenerator.getSymbol(str).getTipoDato();
         return tipo.equals(Symbol.INTEGER) || tipo.equals(Symbol.FLOAT);
     }
     private static boolean isIdString(String str) throws Exception{
-        String tipo = new SymbolTableGenerator().getSymbol(str).getTipoDato();
+        String tipo = SymbolTableGenerator.getSymbol(str).getTipoDato();
         return tipo.equals(Symbol.STRING);
     }
 }
